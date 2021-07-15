@@ -1,7 +1,5 @@
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Music
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import core.MyGame
 import ecs.component.*
 import ecs.system.RenderSystem
@@ -14,8 +12,6 @@ import kotlin.math.min
 private val LOG = logger<RenderSystem>()
 private const val MAX_DELTA_TIME = 1 / 20f
 
-private val playerTexture by lazy { Texture(Gdx.files.internal("assets/images/dino_idle_000.png")) }
-
 class GameScreen(private val game: MyGame) : KtxScreen {
     private var rainMusic: Music
 
@@ -23,12 +19,11 @@ class GameScreen(private val game: MyGame) : KtxScreen {
         with<TransformComponent>() {
             setInitialPosition(2f, 2f, 0f)
         }
-        with<GraphicComponent>() {
-            setSpriteRegion(TextureRegion(playerTexture))
-        }
         with<MoveComponent>()
+        with<GraphicComponent>()
         with<PlayerComponent>()
         with<StateComponent>()
+        with<AnimationComponent>()
     }
 
     init {
@@ -50,6 +45,5 @@ class GameScreen(private val game: MyGame) : KtxScreen {
 
     override fun dispose() {
         rainMusic.dispose()
-        playerTexture.dispose()
     }
 }

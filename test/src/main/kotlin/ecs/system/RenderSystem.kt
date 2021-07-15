@@ -14,7 +14,6 @@ import ktx.log.logger
 
 private val LOG = logger<RenderSystem>()
 
-
 class RenderSystem(
     private val batch: Batch,
     private val gameViewport: Viewport
