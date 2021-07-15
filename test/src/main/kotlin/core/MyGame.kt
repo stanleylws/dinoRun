@@ -21,7 +21,6 @@ class MyGame: KtxGame<KtxScreen>() {
     private lateinit var playerAtlas: TextureAtlas
 
     val gameViewport = FitViewport(V_WIDTH.toFloat(), V_HEIGHT.toFloat())
-
     val engine: Engine = PooledEngine()
 
     override fun create() {
@@ -33,9 +32,11 @@ class MyGame: KtxGame<KtxScreen>() {
         engine.apply {
             addSystem(PlayerInputSystem(gameViewport))
             addSystem(MoveSystem())
+            addSystem(DamageSystem())
             addSystem(PlayerAnimationSystem())
             addSystem(AnimationSystem(playerAtlas))
             addSystem(RenderSystem(batch, gameViewport))
+            addSystem(RemoveSystem())
         }
 
         addScreen(GameScreen(this))

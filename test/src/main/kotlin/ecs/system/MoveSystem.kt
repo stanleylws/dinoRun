@@ -7,12 +7,13 @@ import core.V_HEIGHT
 import core.V_WIDTH
 import ecs.component.*
 import ktx.ashley.allOf
+import ktx.ashley.exclude
 import ktx.ashley.get
 
 private const val UPDATE_RATE = 1 / 25f
 
 class MoveSystem:
-    IteratingSystem(allOf(TransformComponent::class, MoveComponent::class).get()){
+    IteratingSystem(allOf(TransformComponent::class, MoveComponent::class).exclude(RemoveComponent::class).get()){
     private var accumulator = 0f
 
     override fun update(deltaTime: Float) {
