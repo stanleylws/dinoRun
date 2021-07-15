@@ -8,7 +8,9 @@ import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.utils.viewport.FitViewport
-import ecs.system.*
+import ecs.system.MoveSystem
+import ecs.system.PlayerInputSystem
+import ecs.system.RenderSystem
 
 const val V_WIDTH = 16
 const val V_HEIGHT = 9
@@ -25,6 +27,8 @@ class MyGame: KtxGame<KtxScreen>() {
         font = BitmapFont()
 
         engine.apply {
+            addSystem(PlayerInputSystem(gameViewport))
+            addSystem(MoveSystem())
             addSystem(RenderSystem(batch, gameViewport))
         }
 

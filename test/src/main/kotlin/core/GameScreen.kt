@@ -13,6 +13,7 @@ import kotlin.math.min
 
 private val LOG = logger<RenderSystem>()
 private const val MAX_DELTA_TIME = 1 / 20f
+
 private val playerTexture by lazy { Texture(Gdx.files.internal("assets/images/dino_idle_000.png")) }
 
 class GameScreen(private val game: MyGame) : KtxScreen {
@@ -25,6 +26,9 @@ class GameScreen(private val game: MyGame) : KtxScreen {
         with<GraphicComponent>() {
             setSpriteRegion(TextureRegion(playerTexture))
         }
+        with<MoveComponent>()
+        with<PlayerComponent>()
+        with<StateComponent>()
     }
 
     init {
