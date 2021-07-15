@@ -8,19 +8,25 @@ import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.utils.viewport.FitViewport
 import ecs.system.*
 
 const val V_WIDTH = 16
 const val V_HEIGHT = 9
+const val V_WIDTH_PIXELS = 384
+const val V_HEIGHT_PIXELS = 216
 
 class MyGame: KtxGame<KtxScreen>() {
     lateinit var batch: SpriteBatch
     lateinit var font: BitmapFont
     private lateinit var playerAtlas: TextureAtlas
+    private lateinit var backgroundTextures: Array<Texture>
 
     val gameViewport = FitViewport(V_WIDTH.toFloat(), V_HEIGHT.toFloat())
+    val uiViewport = FitViewport(V_WIDTH_PIXELS.toFloat(), V_HEIGHT_PIXELS.toFloat())
+
     val engine: Engine = PooledEngine()
 
     override fun create() {
@@ -28,6 +34,9 @@ class MyGame: KtxGame<KtxScreen>() {
         font = BitmapFont()
 
         playerAtlas = TextureAtlas(Gdx.files.internal("assets/atlas/dino.atlas"))
+        backgroundTextures = Array(5) { i ->
+            Texture(Gdx.files.internal("assets/backgrounds/plx-${i + 1}.png"))
+        }
 
         engine.apply {
             addSystem(PlayerInputSystem(gameViewport))
@@ -35,7 +44,7 @@ class MyGame: KtxGame<KtxScreen>() {
             addSystem(DamageSystem())
             addSystem(PlayerAnimationSystem())
             addSystem(AnimationSystem(playerAtlas))
-            addSystem(RenderSystem(batch, gameViewport))
+            addSystem(RenderSystem(batch, gameViewport, uiViewport, backgroundTextures))
             addSystem(RemoveSystem())
         }
 
@@ -50,5 +59,6 @@ class MyGame: KtxGame<KtxScreen>() {
     override fun dispose() {
         super.dispose()
         playerAtlas.dispose()
+        backgroundTextures.forEach { it.dispose() }
     }
 }
