@@ -13,7 +13,35 @@ private const val UPDATE_RATE = 1 / 25f
 
 class MoveSystem:
     IteratingSystem(allOf(TransformComponent::class, MoveComponent::class).get()){
+    private var accumulator = 0f
 
+    override fun update(deltaTime: Float) {
+        accumulator += deltaTime
+        while (accumulator >= UPDATE_RATE) {
+            accumulator -= UPDATE_RATE
+
+            // save prev. position before calling update
+            entities.forEach { entity ->
+                entity[TransformComponent.mapper]?.let { transform ->
+                    transform.prevPosition.set(transform.position)
+                }
+            }
+
+            super.update(UPDATE_RATE)
+        }
+
+        // interpolate rendering position between prev. position and current position
+        val alpha = accumulator / UPDATE_RATE
+        entities.forEach { entity ->
+            entity[TransformComponent.mapper]?.let { transform ->
+                transform.interpolatedPosition.set(
+                    MathUtils.lerp(transform.prevPosition.x, transform.position.x, alpha),
+                    MathUtils.lerp(transform.prevPosition.y, transform.position.y, alpha),
+                    transform.position.z
+                )
+            }
+        }
+    }
     override fun processEntity(entity: Entity, deltaTime: Float) {
         val transform = entity[TransformComponent.mapper]
         requireNotNull(transform) { "Entity |entity| must have a TransformComponent. entity = $entity" }
