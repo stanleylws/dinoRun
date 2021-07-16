@@ -1,6 +1,8 @@
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Music
+import com.badlogic.gdx.math.Vector2
 import core.MyGame
+import core.V_WIDTH
 import ecs.component.*
 import ecs.system.RenderSystem
 import ktx.app.KtxScreen
@@ -17,7 +19,8 @@ class GameScreen(private val game: MyGame) : KtxScreen {
 
     private val player = game.engine.entity {
         with<TransformComponent>() {
-            setInitialPosition(2f, 2f, 0f)
+            size.set(2f, 2f)
+            setInitialPosition(V_WIDTH.div(2).toFloat() - size.x / 2f, 1f, 0f)
         }
         with<MoveComponent>()
         with<GraphicComponent>()

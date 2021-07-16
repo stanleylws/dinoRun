@@ -19,18 +19,20 @@ import ktx.log.logger
 
 private val LOG = logger<RenderSystem>()
 
-private const val BACKGROUND_SCROLL_SPEED = 0.01f
+private const val BACKGROUND_SCROLL_SPEED = 0.1f
 
 class RenderSystem(
     private val batch: Batch,
     private val gameViewport: Viewport,
     private val uiViewport: Viewport,
-    backgroundTextures: Array<Texture>
+    backgroundTextures: Array<Texture>,
+    platformTexture: Texture
 ): SortedIteratingSystem(
     allOf(TransformComponent::class, GraphicComponent::class).get(),
     compareBy { entity -> entity[TransformComponent.mapper]}
 ) {
 
+    private val platform = Sprite(platformTexture.apply { setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat) })
     private val backgrounds = backgroundTextures.map { texture ->
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
         Sprite(texture)
@@ -44,10 +46,16 @@ class RenderSystem(
             backgrounds.withIndex().forEach { bkground ->
                 bkground.value.run {
                     scroll(
-                        bkground.index * backgroundScrollSpeed.x * deltaTime,
-                        bkground.index * backgroundScrollSpeed.y * deltaTime)
+             bkground.index.toFloat() / 4 * backgroundScrollSpeed.x * deltaTime,
+            bkground.index.toFloat() / 4 *backgroundScrollSpeed.y * deltaTime)
                     draw(batch)
                 }
+            }
+
+            // render platform
+            platform.run {
+                scroll(backgroundScrollSpeed.x * deltaTime, backgroundScrollSpeed.y * deltaTime)
+                draw(batch)
             }
         }
 

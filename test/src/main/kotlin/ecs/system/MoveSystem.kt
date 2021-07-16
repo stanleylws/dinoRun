@@ -64,7 +64,7 @@ class MoveSystem:
         move.speed.x = when(state.currentState) {
             State.WALK -> 0f
             State.RUN -> player.moveSpeed
-            else -> -0.3f
+            else -> -0.8f
         }
         move.speed.y = when(state.currentState) {
             else -> 0f
@@ -80,7 +80,7 @@ class MoveSystem:
         )
         transform.position.y = MathUtils.clamp(
             transform.position.y + move.speed.y * deltaTime,
-            1f,
+            0f,
             V_HEIGHT + 1f - transform.size.y
         )
     }

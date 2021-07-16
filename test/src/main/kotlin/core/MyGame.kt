@@ -22,6 +22,7 @@ class MyGame: KtxGame<KtxScreen>() {
     lateinit var batch: SpriteBatch
     lateinit var font: BitmapFont
     private lateinit var playerAtlas: TextureAtlas
+    private lateinit var platformTexture: Texture
     private lateinit var backgroundTextures: Array<Texture>
 
     val gameViewport = FitViewport(V_WIDTH.toFloat(), V_HEIGHT.toFloat())
@@ -37,6 +38,7 @@ class MyGame: KtxGame<KtxScreen>() {
         backgroundTextures = Array(5) { i ->
             Texture(Gdx.files.internal("assets/backgrounds/plx-${i + 1}.png"))
         }
+        platformTexture = Texture(Gdx.files.internal("assets/maps/platform.png"))
 
         engine.apply {
             addSystem(PlayerInputSystem(gameViewport))
@@ -44,7 +46,7 @@ class MyGame: KtxGame<KtxScreen>() {
             addSystem(DamageSystem())
             addSystem(PlayerAnimationSystem())
             addSystem(AnimationSystem(playerAtlas))
-            addSystem(RenderSystem(batch, gameViewport, uiViewport, backgroundTextures))
+            addSystem(RenderSystem(batch, gameViewport, uiViewport, backgroundTextures, platformTexture))
             addSystem(RemoveSystem())
         }
 
