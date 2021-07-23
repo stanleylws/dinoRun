@@ -20,7 +20,7 @@ class GameScreen(private val game: MyGame) : KtxScreen {
     private val player = game.engine.entity {
         with<TransformComponent>() {
             size.set(2f, 2f)
-            setInitialPosition(V_WIDTH.div(2).toFloat() - size.x / 2f, 1f, 0f)
+            setInitialPosition(V_WIDTH.div(2).toFloat() - size.x / 2f, 1f, 1f)
         }
         with<MoveComponent>()
         with<GraphicComponent>()

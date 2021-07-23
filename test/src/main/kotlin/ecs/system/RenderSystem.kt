@@ -15,11 +15,12 @@ import ktx.ashley.allOf
 import ktx.ashley.get
 import ktx.graphics.use
 import ktx.log.error
+import ktx.log.info
 import ktx.log.logger
 
 private val LOG = logger<RenderSystem>()
 
-private const val BACKGROUND_SCROLL_SPEED = 0.1f
+private const val BACKGROUND_SCROLL_SPEED = 0.05f
 
 class RenderSystem(
     private val batch: Batch,

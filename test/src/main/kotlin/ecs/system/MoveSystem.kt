@@ -9,8 +9,11 @@ import ecs.component.*
 import ktx.ashley.allOf
 import ktx.ashley.exclude
 import ktx.ashley.get
+import ktx.log.info
+import ktx.log.logger
 
 private const val UPDATE_RATE = 1 / 25f
+private val LOG = logger<RenderSystem>()
 
 class MoveSystem:
     IteratingSystem(allOf(TransformComponent::class, MoveComponent::class).exclude(RemoveComponent::class).get()){
@@ -75,8 +78,8 @@ class MoveSystem:
     private fun moveEntity(transform: TransformComponent, move: MoveComponent, deltaTime: Float) {
         transform.position.x = MathUtils.clamp(
             transform.position.x + move.speed.x * deltaTime,
-            0f,
-            V_WIDTH - transform.size.x
+            -1f,
+            V_WIDTH + 1f,
         )
         transform.position.y = MathUtils.clamp(
             transform.position.y + move.speed.y * deltaTime,

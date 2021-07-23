@@ -28,8 +28,8 @@ class TransformComponent : Component, Pool.Poolable, Comparable<TransformCompone
     }
 
     override fun compareTo(other: TransformComponent): Int {
-        val zDiff = other.position.z.compareTo(position.z)
-        return (if (zDiff == 0) other.position.y.compareTo(position.y) else zDiff).toInt()
+        val zDiff = position.z.compareTo(other.position.z)
+        return (if (zDiff == 0) position.y.compareTo(other.position.y) else zDiff).toInt()
     }
 
     companion object {

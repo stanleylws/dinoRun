@@ -12,7 +12,7 @@ class PlayerComponent: Component, Pool.Poolable {
     var maxLife = MAX_LIFE
     var shield = 0f
     var maxShield = MAX_SHIELD
-    var moveSpeed = 1f
+    var moveSpeed = 2f
 
     override fun reset() {
         var life = 100f
