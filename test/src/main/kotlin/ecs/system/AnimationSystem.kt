@@ -69,7 +69,7 @@ class AnimationSystem(
             animation.animation = getAnimation(animation.type)
         }
 
-        val frame = animation.animation.getKeyFrame(animation.stateTime)
+        val frame = animation.animation.getKeyFrame(animation.stateTime + animation.offsetTime)
         graphic.setSpriteRegion(frame)
     }
 }

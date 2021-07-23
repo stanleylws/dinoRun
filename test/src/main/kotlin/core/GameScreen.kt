@@ -1,6 +1,5 @@
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Music
-import com.badlogic.gdx.math.Vector2
 import core.MyGame
 import core.V_WIDTH
 import ecs.component.*
@@ -13,6 +12,7 @@ import kotlin.math.min
 
 private val LOG = logger<RenderSystem>()
 private const val MAX_DELTA_TIME = 1 / 20f
+private const val GOLDEN_RATIO = 1.618f
 
 class GameScreen(private val game: MyGame) : KtxScreen {
     private var rainMusic: Music
@@ -32,6 +32,22 @@ class GameScreen(private val game: MyGame) : KtxScreen {
     init {
         rainMusic = Gdx.audio.newMusic(Gdx.files.internal("assets/music/rain.mp3"))
         rainMusic.isLooping = true
+
+        repeat(6){ index ->
+            var randomSize = 5f + Math.random().toFloat() * GOLDEN_RATIO
+            game.engine.entity {
+                with<TransformComponent>() {
+                    size.set(randomSize, randomSize)
+                    setInitialPosition(-1f - size.x / 2f - index / 3f,-0.5f, if (index % 2 == 0) 2f else 0f)
+                }
+                with<DamageComponent>()
+                with<GraphicComponent>()
+                with<AnimationComponent>() {
+                    type = AnimationType.EXPLOSION
+                    offsetTime = index * GOLDEN_RATIO
+                }
+            }
+        }
     }
 
     override fun show() {

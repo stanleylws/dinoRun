@@ -21,7 +21,7 @@ const val V_HEIGHT_PIXELS = 216
 class MyGame: KtxGame<KtxScreen>() {
     lateinit var batch: SpriteBatch
     lateinit var font: BitmapFont
-    private lateinit var playerAtlas: TextureAtlas
+    private lateinit var animationAtlas: TextureAtlas
     private lateinit var platformTexture: Texture
     private lateinit var backgroundTextures: Array<Texture>
 
@@ -34,7 +34,7 @@ class MyGame: KtxGame<KtxScreen>() {
         batch = SpriteBatch()
         font = BitmapFont()
 
-        playerAtlas = TextureAtlas(Gdx.files.internal("assets/atlas/dino.atlas"))
+        animationAtlas = TextureAtlas(Gdx.files.internal("assets/atlas/animations.atlas"))
         backgroundTextures = Array(5) { i ->
             Texture(Gdx.files.internal("assets/backgrounds/plx-${i + 1}.png"))
         }
@@ -45,7 +45,7 @@ class MyGame: KtxGame<KtxScreen>() {
             addSystem(MoveSystem())
             addSystem(DamageSystem())
             addSystem(PlayerAnimationSystem())
-            addSystem(AnimationSystem(playerAtlas))
+            addSystem(AnimationSystem(animationAtlas))
             addSystem(RenderSystem(batch, gameViewport, uiViewport, backgroundTextures, platformTexture))
             addSystem(RemoveSystem())
         }
@@ -60,7 +60,7 @@ class MyGame: KtxGame<KtxScreen>() {
 
     override fun dispose() {
         super.dispose()
-        playerAtlas.dispose()
+        animationAtlas.dispose()
         backgroundTextures.forEach { it.dispose() }
     }
 }

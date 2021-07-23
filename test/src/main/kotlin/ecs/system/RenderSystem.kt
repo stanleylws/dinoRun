@@ -73,14 +73,15 @@ class RenderSystem(
         val graphic = entity[GraphicComponent.mapper]
         requireNotNull(graphic) { "Entity |entity| must have a GraphicComponent. entity = $entity"}
         val state = entity[StateComponent.mapper]
-        requireNotNull(state) { "Entity |entity| must have a StateComponent. entity = $entity" }
 
-        var scrollSpeed = when(state.currentState) {
-            State.WALK -> BACKGROUND_SCROLL_SPEED
-            State.RUN -> BACKGROUND_SCROLL_SPEED * 2
-            else -> BACKGROUND_SCROLL_SPEED / 2
+        if (state != null) {
+            var scrollSpeed = when(state.currentState) {
+                State.WALK -> BACKGROUND_SCROLL_SPEED * 2
+                State.RUN -> BACKGROUND_SCROLL_SPEED * 4
+                else -> BACKGROUND_SCROLL_SPEED
+            }
+            backgroundScrollSpeed.set(scrollSpeed, 0f)
         }
-        backgroundScrollSpeed.set(scrollSpeed, 0f)
 
         if (graphic.sprite.texture == null) {
             LOG.error { "Entity has no texture for rendering. entity=$entity" }

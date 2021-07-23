@@ -17,7 +17,8 @@ enum class AnimationType(
     DINO_WALK("dino_walk", 0.5f),
     DINO_RUN("dino_run", 0.5f),
     DINO_ATTACK("dino_kick", 0.5f, Animation.PlayMode.NORMAL),
-    DINO_HURT("dino_hurt", 0.5f, Animation.PlayMode.NORMAL)
+    DINO_HURT("dino_hurt", 0.5f, Animation.PlayMode.NORMAL),
+    EXPLOSION("explosion", 7f)
 }
 
 class Animation2D(
@@ -30,11 +31,14 @@ class Animation2D(
 class AnimationComponent: Component, Pool.Poolable {
     var type = AnimationType.DINO_IDLE
     var stateTime = 0f
+    var offsetTime = 0f
+
     lateinit var animation: Animation2D
 
     override fun reset() {
         type = AnimationType.DINO_IDLE
         stateTime = 0f
+        offsetTime = 0f
     }
 
     companion object {
