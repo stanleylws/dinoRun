@@ -14,7 +14,7 @@ import ktx.ashley.get
 import ktx.log.info
 import ktx.log.logger
 
-private const val UPDATE_RATE = 1 / 25f
+private const val UPDATE_RATE = 1 / 30f
 private val LOG = logger<RenderSystem>()
 
 class MoveSystem:

@@ -10,6 +10,7 @@ import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.viewport.FitViewport
 import ecs.system.*
 
@@ -18,12 +19,17 @@ const val V_HEIGHT = 9
 const val V_WIDTH_PIXELS = 384
 const val V_HEIGHT_PIXELS = 216
 
+const val IN_DEBUGGING = false
+
 const val SCROLL_SPEED_TO_WORLD_RATIO =  1f / 0.0625f
 const val DEFAULT_SCROLL_SPEED = 0.05f
 var CURRENT_SCROLL_SPEED = DEFAULT_SCROLL_SPEED.toFloat()
+
 class MyGame: KtxGame<KtxScreen>() {
     lateinit var batch: SpriteBatch
     lateinit var font: BitmapFont
+    lateinit var shapeRenderer: ShapeRenderer
+
     private lateinit var animationAtlas: TextureAtlas
     private lateinit var platformTexture: Texture
     private lateinit var backgroundTextures: Array<Texture>
@@ -36,6 +42,7 @@ class MyGame: KtxGame<KtxScreen>() {
     override fun create() {
         batch = SpriteBatch()
         font = BitmapFont()
+        shapeRenderer = ShapeRenderer()
 
         animationAtlas = TextureAtlas(Gdx.files.internal("assets/atlas/animation.atlas"))
         backgroundTextures = Array(5) { i ->
@@ -50,7 +57,7 @@ class MyGame: KtxGame<KtxScreen>() {
             addSystem(DamageSystem())
             addSystem(PlayerAnimationSystem())
             addSystem(AnimationSystem(animationAtlas))
-            addSystem(RenderSystem(batch, gameViewport, uiViewport, backgroundTextures, platformTexture))
+            addSystem(RenderSystem(shapeRenderer, batch, gameViewport, uiViewport, backgroundTextures, platformTexture))
             addSystem(RemoveSystem())
         }
 

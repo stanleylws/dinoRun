@@ -2,12 +2,15 @@ package ecs.system
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.SortedIteratingSystem
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.Sprite
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.viewport.Viewport
 import core.CURRENT_SCROLL_SPEED
+import core.IN_DEBUGGING
 import ecs.component.GraphicComponent
 import ecs.component.TransformComponent
 import ktx.ashley.allOf
@@ -19,6 +22,7 @@ import ktx.log.logger
 private val LOG = logger<RenderSystem>()
 
 class RenderSystem(
+    private val shapeRenderer: ShapeRenderer,
     private val batch: Batch,
     private val gameViewport: Viewport,
     private val uiViewport: Viewport,
@@ -28,6 +32,7 @@ class RenderSystem(
     allOf(TransformComponent::class, GraphicComponent::class).get(),
     compareBy { entity -> entity[TransformComponent.mapper]}
 ) {
+
 
     private val platform = Sprite(platformTexture.apply { setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat) })
     private val backgrounds = backgroundTextures.map { texture ->
@@ -58,10 +63,9 @@ class RenderSystem(
 
         forceSort()
         gameViewport.apply()
-        batch.use(gameViewport.camera.combined) {
-            // render entity
-            super.update(deltaTime)
-        }
+
+        // render entity & bounding box
+        super.update(deltaTime)
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
@@ -77,10 +81,20 @@ class RenderSystem(
             return
         }
 
-        graphic.sprite.run {
-            rotation = transform.rotationDeg
-            setBounds(transform.interpolatedPosition.x, transform.interpolatedPosition.y, transform.size.x, transform.size.y)
-            draw(batch)
+        batch.use(gameViewport.camera.combined) {
+            graphic.sprite.run {
+                rotation = transform.rotationDeg
+                setBounds(transform.interpolatedPosition.x, transform.interpolatedPosition.y, transform.size.x, transform.size.y)
+                draw(batch)
+            }
+        }
+
+        if (IN_DEBUGGING) {
+            shapeRenderer.use(ShapeRenderer.ShapeType.Line, gameViewport.camera.combined) {
+                shapeRenderer.setColor(Color.GREEN)
+                shapeRenderer.rect(transform.boundingBox.x, transform.boundingBox.y,
+                    transform.boundingBox.width, transform.boundingBox.height)
+            }
         }
     }
 }

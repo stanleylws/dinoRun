@@ -15,11 +15,11 @@ class PlayerComponent: Component, Pool.Poolable {
     var moveSpeed = 2f
 
     override fun reset() {
-        var life = 100f
-        var maxLife = MAX_LIFE
-        var shield = 0f
-        var maxShield = MAX_SHIELD
-        var moveSpeed = 1f
+        life = 100f
+        maxLife = MAX_LIFE
+        shield = 0f
+        maxShield = MAX_SHIELD
+        moveSpeed = 1f
     }
 
     companion object {

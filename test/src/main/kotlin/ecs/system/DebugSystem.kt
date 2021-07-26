@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IntervalIteratingSystem
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
+import core.IN_DEBUGGING
 import ecs.component.PlayerComponent
 import ecs.component.TransformComponent
 import ktx.ashley.allOf
@@ -14,7 +15,7 @@ private const val WINDOW_INFO_UPDATE_RATE = 0.25f
 
 class DebugSystem: IntervalIteratingSystem(allOf(PlayerComponent::class).get(), WINDOW_INFO_UPDATE_RATE) {
     init {
-        setProcessing(false)
+        setProcessing(IN_DEBUGGING)
     }
 
     override fun processEntity(entity: Entity) {
