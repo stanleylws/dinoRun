@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.viewport.FitViewport
 import ecs.system.*
+import event.GameEventManager
 
 const val V_WIDTH = 16
 const val V_HEIGHT = 9
@@ -36,7 +37,7 @@ class MyGame: KtxGame<KtxScreen>() {
 
     val gameViewport = FitViewport(V_WIDTH.toFloat(), V_HEIGHT.toFloat())
     val uiViewport = FitViewport(V_WIDTH_PIXELS.toFloat(), V_HEIGHT_PIXELS.toFloat())
-
+    val gameEventManager = GameEventManager()
     val engine: Engine = PooledEngine()
 
     override fun create() {
@@ -52,9 +53,9 @@ class MyGame: KtxGame<KtxScreen>() {
 
         engine.apply {
             addSystem(PlayerInputSystem(gameViewport))
-            addSystem(ObstacleSystem())
+            addSystem(ObstacleSystem(gameEventManager))
+            addSystem(DamageSystem(gameEventManager))
             addSystem(MoveSystem())
-            addSystem(DamageSystem())
             addSystem(PlayerAnimationSystem())
             addSystem(AnimationSystem(animationAtlas))
             addSystem(RenderSystem(shapeRenderer, batch, gameViewport, uiViewport, backgroundTextures, platformTexture))

@@ -22,7 +22,9 @@ private const val MIN_SPAWN_INTERVAL = 2.9f
 private const val LIFE_GAIN = 25f
 private const val SHIELD_GAIN = 25f
 
-class ObstacleSystem(): IteratingSystem(allOf(ObstacleComponent::class, TransformComponent::class, MoveComponent::class).exclude(RemoveComponent::class).get()){
+class ObstacleSystem(
+    private val gameEventManager: GameEventManager
+): IteratingSystem(allOf(ObstacleComponent::class, TransformComponent::class, MoveComponent::class).exclude(RemoveComponent::class).get()){
     private val playerEntities by lazy {
         engine.getEntitiesFor(
             allOf(PlayerComponent::class).exclude(RemoveComponent::class).get()
@@ -87,9 +89,20 @@ class ObstacleSystem(): IteratingSystem(allOf(ObstacleComponent::class, Transfor
                 )
 
                 if (playerTransform.boundingBox.overlaps(transform.boundingBox)) {
-                    LOG.info { "hit" }
+                    notifyDamage(playerEntity, obstacle.damage)
                 }
+
             }
         }
+    }
+
+    private fun notifyDamage(player: Entity, damage: Float) {
+        gameEventManager.dispatchEvent(
+            GameEventType.PLAYER_DAMAGED,
+            GameEventPlayerDamaged.apply {
+                this.player = player
+                this.damage = damage
+            }
+        )
     }
 }
