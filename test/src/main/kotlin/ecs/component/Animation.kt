@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.utils.Pool
 import ktx.ashley.mapperFor
-import com.badlogic.gdx.utils.Array as GdxArray
+import ktx.collections.GdxArray
 
 private const val DEFAULT_FRAME_DURATION = 1 / 20f
 enum class AnimationType(
@@ -13,12 +13,14 @@ enum class AnimationType(
     val speedRate: Float = 1f,
     val playMode: Animation.PlayMode = Animation.PlayMode.LOOP
 ) {
+    NONE(""),
     DINO_IDLE("dino_idle", 0.5f),
     DINO_WALK("dino_walk", 0.5f),
     DINO_RUN("dino_run", 0.5f),
     DINO_ATTACK("dino_kick", 0.5f, Animation.PlayMode.NORMAL),
     DINO_HURT("dino_hurt", 0.5f, Animation.PlayMode.NORMAL),
-    EXPLOSION("explosion", 7f)
+    EXPLOSION("explosion", 7f),
+    SPIKE("Idle")
 }
 
 class Animation2D(

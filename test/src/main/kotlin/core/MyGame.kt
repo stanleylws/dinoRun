@@ -18,6 +18,9 @@ const val V_HEIGHT = 9
 const val V_WIDTH_PIXELS = 384
 const val V_HEIGHT_PIXELS = 216
 
+const val SCROLL_SPEED_TO_WORLD_RATIO =  1f / 0.0625f
+const val DEFAULT_SCROLL_SPEED = 0.05f
+var CURRENT_SCROLL_SPEED = DEFAULT_SCROLL_SPEED.toFloat()
 class MyGame: KtxGame<KtxScreen>() {
     lateinit var batch: SpriteBatch
     lateinit var font: BitmapFont
@@ -34,7 +37,7 @@ class MyGame: KtxGame<KtxScreen>() {
         batch = SpriteBatch()
         font = BitmapFont()
 
-        animationAtlas = TextureAtlas(Gdx.files.internal("assets/atlas/animations.atlas"))
+        animationAtlas = TextureAtlas(Gdx.files.internal("assets/atlas/animation.atlas"))
         backgroundTextures = Array(5) { i ->
             Texture(Gdx.files.internal("assets/backgrounds/plx-${i + 1}.png"))
         }
@@ -42,6 +45,7 @@ class MyGame: KtxGame<KtxScreen>() {
 
         engine.apply {
             addSystem(PlayerInputSystem(gameViewport))
+            addSystem(ObstacleSystem())
             addSystem(MoveSystem())
             addSystem(DamageSystem())
             addSystem(PlayerAnimationSystem())

@@ -7,20 +7,16 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.viewport.Viewport
+import core.CURRENT_SCROLL_SPEED
 import ecs.component.GraphicComponent
-import ecs.component.State
-import ecs.component.StateComponent
 import ecs.component.TransformComponent
 import ktx.ashley.allOf
 import ktx.ashley.get
 import ktx.graphics.use
 import ktx.log.error
-import ktx.log.info
 import ktx.log.logger
 
 private val LOG = logger<RenderSystem>()
-
-private const val BACKGROUND_SCROLL_SPEED = 0.05f
 
 class RenderSystem(
     private val batch: Batch,
@@ -48,7 +44,7 @@ class RenderSystem(
                 bkground.value.run {
                     scroll(
              bkground.index.toFloat() / 4 * backgroundScrollSpeed.x * deltaTime,
-            bkground.index.toFloat() / 4 *backgroundScrollSpeed.y * deltaTime)
+            bkground.index.toFloat() / 4 * backgroundScrollSpeed.y * deltaTime)
                     draw(batch)
                 }
             }
@@ -73,16 +69,8 @@ class RenderSystem(
         require(transform != null) { "Entity |entity| must have a TransformComponent. entity = $entity"}
         val graphic = entity[GraphicComponent.mapper]
         requireNotNull(graphic) { "Entity |entity| must have a GraphicComponent. entity = $entity"}
-        val state = entity[StateComponent.mapper]
 
-        if (state != null) {
-            var scrollSpeed = when(state.currentState) {
-                State.WALK -> BACKGROUND_SCROLL_SPEED * 2
-                State.RUN -> BACKGROUND_SCROLL_SPEED * 4
-                else -> BACKGROUND_SCROLL_SPEED
-            }
-            backgroundScrollSpeed.set(scrollSpeed, 0f)
-        }
+        backgroundScrollSpeed.set(CURRENT_SCROLL_SPEED, 0f)
 
         if (graphic.sprite.texture == null) {
             LOG.error { "Entity has no texture for rendering. entity=$entity" }

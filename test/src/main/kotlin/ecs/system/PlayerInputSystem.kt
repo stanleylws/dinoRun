@@ -4,14 +4,13 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
-import com.badlogic.gdx.graphics.g2d.Animation
-import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.viewport.Viewport
+import core.CURRENT_SCROLL_SPEED
+import core.DEFAULT_SCROLL_SPEED
 import ecs.component.*
 import ktx.ashley.allOf
 import ktx.ashley.get
-import ktx.log.info
 import ktx.log.logger
 import kotlin.math.max
 
@@ -51,6 +50,12 @@ class PlayerInputSystem(
             Gdx.input.isKeyPressed(Input.Keys.A) -> State.ATTACK
             Gdx.input.isKeyPressed(Input.Keys.D) -> State.WALK
             else -> State.IDLE
+        }
+
+        CURRENT_SCROLL_SPEED = when(state.currentState) {
+            State.WALK -> DEFAULT_SCROLL_SPEED * 2
+            State.RUN -> DEFAULT_SCROLL_SPEED * 4
+            else -> DEFAULT_SCROLL_SPEED
         }
     }
 }

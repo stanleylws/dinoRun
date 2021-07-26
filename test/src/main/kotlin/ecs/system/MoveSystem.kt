@@ -3,6 +3,8 @@ package ecs.system
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.MathUtils
+import core.DEFAULT_SCROLL_SPEED
+import core.SCROLL_SPEED_TO_WORLD_RATIO
 import core.V_HEIGHT
 import core.V_WIDTH
 import ecs.component.*
@@ -67,7 +69,7 @@ class MoveSystem:
         move.speed.x = when(state.currentState) {
             State.WALK -> 0f
             State.RUN -> player.moveSpeed
-            else -> -0.8f
+            else -> -1 * DEFAULT_SCROLL_SPEED * SCROLL_SPEED_TO_WORLD_RATIO
         }
         move.speed.y = when(state.currentState) {
             else -> 0f
