@@ -13,6 +13,7 @@ import core.CURRENT_SCROLL_SPEED
 import core.IN_DEBUGGING
 import ecs.component.ColliderComponent
 import ecs.component.GraphicComponent
+import ecs.component.InteractComponent
 import ecs.component.TransformComponent
 import ktx.ashley.allOf
 import ktx.ashley.get
@@ -43,9 +44,9 @@ class RenderSystem(
     private val backgroundScrollSpeed = Vector2()
 
     override fun update(deltaTime: Float) {
+        // render background
         uiViewport.apply()
         batch.use(uiViewport.camera.combined) {
-            // render background
             backgrounds.withIndex().forEach { bkground ->
                 bkground.value.run {
                     scroll(
@@ -54,19 +55,21 @@ class RenderSystem(
                     draw(batch)
                 }
             }
+        }
 
-            // render platform
+        // render entity & bounding box
+        forceSort()
+        gameViewport.apply()
+        super.update(deltaTime)
+
+        // render platform
+        uiViewport.apply()
+        batch.use(uiViewport.camera.combined) {
             platform.run {
                 scroll(backgroundScrollSpeed.x * deltaTime, backgroundScrollSpeed.y * deltaTime)
                 draw(batch)
             }
         }
-
-        forceSort()
-        gameViewport.apply()
-
-        // render entity & bounding box
-        super.update(deltaTime)
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
@@ -96,6 +99,12 @@ class RenderSystem(
                     shapeRenderer.setColor(Color.GREEN)
                     shapeRenderer.rect(collider.bounding.x, collider.bounding.y,
                         collider.bounding.width, collider.bounding.height)
+                }
+
+                entity[InteractComponent.mapper]?.let { interact ->
+                    shapeRenderer.setColor(Color.RED)
+                    shapeRenderer.rect(interact.zone.x, interact.zone.y,
+                        interact.zone.width, interact.zone.height)
                 }
             }
         }
