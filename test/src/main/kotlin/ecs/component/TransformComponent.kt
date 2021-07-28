@@ -13,7 +13,6 @@ class TransformComponent : Component, Pool.Poolable, Comparable<TransformCompone
     val interpolatedPosition = Vector3()
     val size = Vector2(1f, 1f)
     var rotationDeg = 0f
-    var boundingBox = Rectangle()
 
     override fun reset() {
         position.set(Vector3.Zero)
@@ -21,7 +20,6 @@ class TransformComponent : Component, Pool.Poolable, Comparable<TransformCompone
         interpolatedPosition.set(Vector3.Zero)
         size.set(1f, 1f)
         rotationDeg = 0f
-        boundingBox = Rectangle()
     }
 
     fun setInitialPosition(x: Float, y: Float, z: Float) {

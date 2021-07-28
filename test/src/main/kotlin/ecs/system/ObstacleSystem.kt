@@ -49,6 +49,9 @@ class ObstacleSystem(
             with<TransformComponent> {
                 setInitialPosition(posX, posY, 0f)
             }
+            with<ColliderComponent> {
+                modifier = ColliderModifier(0.05f, 0f, 0.8f, 0.2f)
+            }
             with<MoveComponent> {
                 speed.x = -1 * CURRENT_SCROLL_SPEED * SCROLL_SPEED_TO_WORLD_RATIO
             }
@@ -61,6 +64,8 @@ class ObstacleSystem(
     override fun processEntity(entity: Entity, deltaTime: Float) {
         val transform = entity[TransformComponent.mapper]
         requireNotNull(transform) { "Entity |entity| must have a TransformComponent. entity = $entity" }
+        val collider = entity[ColliderComponent.mapper]
+        requireNotNull(collider) { "Entity |entity| must have a ColliderComponent. entity = $entity" }
         val move = entity[MoveComponent.mapper]
         requireNotNull(move) { "Entity |entity| must have a MoveComponent. entity = $entity" }
         val obstacle = entity[ObstacleComponent.mapper]
@@ -72,28 +77,38 @@ class ObstacleSystem(
         }
 
         move.speed.x = -1 * CURRENT_SCROLL_SPEED * SCROLL_SPEED_TO_WORLD_RATIO
-        transform.boundingBox.set(
-            transform.interpolatedPosition.x + 0.05f,
+
+        // update collider and interaction position
+        updateColliderBounding(transform, collider)
+
+        interact.zone.set(
+            transform.interpolatedPosition.x,
             transform.interpolatedPosition.y,
-            transform.size.x * 0.9f,
+            transform.size.x,
             transform.size.y
         )
 
         playerEntities.forEach { playerEntity ->
-            playerEntity[TransformComponent.mapper]?.let { playerTransform ->
-                playerTransform.boundingBox.set(
-                    playerTransform.interpolatedPosition.x + 0.4f,
-                    playerTransform.interpolatedPosition.y + 0.2f,
-                    playerTransform.size.x * 0.5f,
-                    playerTransform.size.y
-                )
+            val playerTransform = playerEntity[TransformComponent.mapper]
+            requireNotNull(playerTransform) { "Entity |entity| must have a TransformComponent. entity = $entity" }
+            val playerCollider = playerEntity[ColliderComponent.mapper]
+            requireNotNull(playerCollider) { "Entity |entity| must have a ColliderComponent. entity = $entity" }
 
-                if (playerTransform.boundingBox.overlaps(transform.boundingBox)) {
-                    notifyDamage(playerEntity, obstacle.damage)
-                }
+            updateColliderBounding(playerTransform, playerCollider)
 
+            if (playerCollider.bounding.overlaps(collider.bounding)) {
+                notifyDamage(playerEntity, obstacle.type.obj.getDamage())
             }
         }
+    }
+
+    private fun updateColliderBounding(transform: TransformComponent, collider: ColliderComponent) {
+        collider.bounding.set(
+            transform.interpolatedPosition.x + collider.modifier.offsetX,
+            transform.interpolatedPosition.y + collider.modifier.offsetY,
+            transform.size.x * collider.modifier.widthScale,
+            transform.size.y * collider.modifier.heightScale
+        )
     }
 
     private fun notifyDamage(player: Entity, damage: Float) {

@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.viewport.Viewport
 import core.CURRENT_SCROLL_SPEED
 import core.IN_DEBUGGING
+import ecs.component.ColliderComponent
 import ecs.component.GraphicComponent
 import ecs.component.TransformComponent
 import ktx.ashley.allOf
@@ -91,9 +92,11 @@ class RenderSystem(
 
         if (IN_DEBUGGING) {
             shapeRenderer.use(ShapeRenderer.ShapeType.Line, gameViewport.camera.combined) {
-                shapeRenderer.setColor(Color.GREEN)
-                shapeRenderer.rect(transform.boundingBox.x, transform.boundingBox.y,
-                    transform.boundingBox.width, transform.boundingBox.height)
+                entity[ColliderComponent.mapper]?.let { collider ->
+                    shapeRenderer.setColor(Color.GREEN)
+                    shapeRenderer.rect(collider.bounding.x, collider.bounding.y,
+                        collider.bounding.width, collider.bounding.height)
+                }
             }
         }
     }
