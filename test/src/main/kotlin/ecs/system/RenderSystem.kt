@@ -40,7 +40,7 @@ class RenderSystem(
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
         Sprite(texture)
     }
-    private val backgroundScrollSpeed = Vector2.Zero
+    private val backgroundScrollSpeed = Vector2()
 
     override fun update(deltaTime: Float) {
         uiViewport.apply()

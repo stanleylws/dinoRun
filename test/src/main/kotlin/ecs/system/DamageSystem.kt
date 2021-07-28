@@ -18,7 +18,7 @@ private val LOG = logger<RenderSystem>()
 
 private const val DAMAGE_MOVE_OFFSET_SCALE = 2.5f
 private const val DAMAGE_AREA_WIDTH = 1f
-private const val DAMAGE_PER_HIT = 25f
+private const val DAMAGE_PER_HIT = 1f
 private const val DAMAGE_BUFFER_DURATION = 1f
 private const val DEATH_EXPLOSION_DURATION = 1f
 
@@ -61,6 +61,12 @@ class DamageSystem(
         playerEntities.forEach{ playerEntity ->
             val tf = playerEntity[TransformComponent.mapper]
             requireNotNull(tf) { "Entity |entity| must have a TransformComponent. entity = $entity" }
+            val state = playerEntity[StateComponent.mapper]
+            requireNotNull(state) { "Entity |entity| must have a StateComponent. entity = $playerEntity" }
+
+            if (immuneTime < DAMAGE_BUFFER_DURATION / 2f && state.currentState.equals(State.HURT)) {
+                state.currentState = State.IDLE
+            }
 
             if (tf.position.x <= DAMAGE_AREA_WIDTH) {
                 doDamage(playerEntity, DAMAGE_PER_HIT)
@@ -75,10 +81,6 @@ class DamageSystem(
         requireNotNull(player) { "Entity |entity| must have a PlayerComponent. entity = $playerEntity" }
         val state = playerEntity[StateComponent.mapper]
         requireNotNull(state) { "Entity |entity| must have a StateComponent. entity = $playerEntity" }
-
-        if (immuneTime < DAMAGE_BUFFER_DURATION / 2 && state.currentState.equals(State.HURT)) {
-            state.currentState = State.IDLE
-        }
 
         if (immuneTime > 0f) return
 

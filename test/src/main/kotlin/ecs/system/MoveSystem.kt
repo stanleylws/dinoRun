@@ -14,7 +14,7 @@ import ktx.ashley.get
 import ktx.log.info
 import ktx.log.logger
 
-private const val UPDATE_RATE = 1 / 30f
+private const val UPDATE_RATE = 1 / 60f
 private val LOG = logger<RenderSystem>()
 
 class MoveSystem:
@@ -81,7 +81,7 @@ class MoveSystem:
         transform.position.x = MathUtils.clamp(
             transform.position.x + move.speed.x * deltaTime,
             -1f,
-            V_WIDTH + 1f,
+            V_WIDTH.toFloat(),
         )
         transform.position.y = MathUtils.clamp(
             transform.position.y + move.speed.y * deltaTime,
