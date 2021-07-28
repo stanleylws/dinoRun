@@ -13,7 +13,7 @@ class Spike: Obstacle {
 
     private val damage = 0.5f
     private val animationType = AnimationType.SPIKE
-    private val colliderModifier = ColliderModifier(0.05f, 0f, 0.8f, 0.2f)
+    private val colliderModifier = ColliderModifier(0.05f, 0f, 0.9f, 0.2f)
 
     override fun getDamage(): Float {
         return damage
