@@ -77,9 +77,6 @@ class ObstacleSystem(
 
         move.speed.x = -1 * CURRENT_SCROLL_SPEED * SCROLL_SPEED_TO_WORLD_RATIO
 
-        // update collider and interaction position
-        updateColliderBounding(transform, collider)
-
         interact.zone.set(
             transform.interpolatedPosition.x,
             transform.interpolatedPosition.y,
@@ -93,8 +90,6 @@ class ObstacleSystem(
             val playerCollider = playerEntity[ColliderComponent.mapper]
             requireNotNull(playerCollider) { "Entity |entity| must have a ColliderComponent. entity = $entity" }
 
-            updateColliderBounding(playerTransform, playerCollider)
-
             if (playerCollider.bounding.overlaps(interact.zone)) {
                 obstacle.type.obj.onInteraction(entity, playerEntity)
             }
@@ -103,15 +98,6 @@ class ObstacleSystem(
                 notifyDamage(playerEntity, obstacle.type.obj.getDamage())
             }
         }
-    }
-
-    private fun updateColliderBounding(transform: TransformComponent, collider: ColliderComponent) {
-        collider.bounding.set(
-            transform.interpolatedPosition.x + collider.modifier.offsetX,
-            transform.interpolatedPosition.y + collider.modifier.offsetY,
-            transform.size.x * collider.modifier.widthScale,
-            transform.size.y * collider.modifier.heightScale
-        )
     }
 
     private fun notifyDamage(player: Entity, damage: Float) {

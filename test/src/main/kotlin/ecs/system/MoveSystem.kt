@@ -45,6 +45,15 @@ class MoveSystem:
                     MathUtils.lerp(transform.prevPosition.y, transform.position.y, alpha),
                     transform.position.z
                 )
+
+                entity[ColliderComponent.mapper]?.let { collider ->
+                    collider.bounding.set(
+                        transform.interpolatedPosition.x + collider.modifier.offsetX,
+                        transform.interpolatedPosition.y + collider.modifier.offsetY,
+                        transform.size.x * collider.modifier.widthScale,
+                        transform.size.y * collider.modifier.heightScale
+                    )
+                }
             }
         }
     }
