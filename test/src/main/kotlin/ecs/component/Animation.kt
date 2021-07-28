@@ -20,7 +20,10 @@ enum class AnimationType(
     DINO_ATTACK("dino_kick", 0.5f, Animation.PlayMode.NORMAL),
     DINO_HURT("dino_hurt", 0.5f, Animation.PlayMode.NORMAL),
     EXPLOSION("explosion", 7f),
-    SPIKE("Idle")
+    SPIKE("spike_idle"),
+    BOX_IDLE("box_idle"),
+    BOX_HIT("box_hit", 0.5f, Animation.PlayMode.NORMAL),
+    BOX_BREAK("box_break", 0.5f, Animation.PlayMode.NORMAL)
 }
 
 class Animation2D(
