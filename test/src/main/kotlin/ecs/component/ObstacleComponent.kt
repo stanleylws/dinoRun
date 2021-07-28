@@ -1,26 +1,32 @@
 package ecs.component
 
 import com.badlogic.ashley.core.Component
-import com.badlogic.gdx.math.Rectangle
-import com.badlogic.gdx.math.Vector2
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Pool
 import ktx.ashley.mapperFor
+import obstacle.Empty
+import obstacle.Spike
 
-enum class ObstacleType(
-    val animationType: AnimationType,
-    val damage: Float = 0f
-) {
-    NONE(AnimationType.NONE),
-    SPIKE(AnimationType.SPIKE, 25f),
+interface Obstacle {
+    fun getDamage(): Float
+    fun getAnimationType(): AnimationType
+    fun getColliderModifier(): ColliderModifier
+    fun onInteraction(self: Entity, other: Entity)
+    fun performAction(self: Entity, other: Entity)
 }
 
-class ObstacleComponent: Component, Pool.Poolable  {
+enum class ObstacleType(
+    val obj: Obstacle,
+) {
+    NONE(Empty()),
+    SPIKE(Spike())
+}
+
+class ObstacleComponent: Component, Pool.Poolable {
     var type = ObstacleType.NONE
-    var damage = 0f
 
     override fun reset() {
         type = ObstacleType.NONE
-        damage = 0f
     }
 
     companion object {

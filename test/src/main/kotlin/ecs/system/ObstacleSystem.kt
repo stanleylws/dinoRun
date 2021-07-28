@@ -3,7 +3,6 @@ package ecs.system
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.MathUtils
-import com.badlogic.gdx.math.Rectangle
 import core.CURRENT_SCROLL_SPEED
 import core.SCROLL_SPEED_TO_WORLD_RATIO
 import core.V_WIDTH
@@ -12,7 +11,6 @@ import event.GameEventManager
 import event.GameEventPlayerDamaged
 import event.GameEventType
 import ktx.ashley.*
-import ktx.log.info
 import ktx.log.logger
 
 private val LOG = logger<ObstacleSystem>()
@@ -38,10 +36,8 @@ class ObstacleSystem(
         spawnTime -= deltaTime
         if (spawnTime <= 0f) {
             spawnTime = MathUtils.random(MIN_SPAWN_INTERVAL, MAX_SPAWN_INTERVAL)
-            spawnObstacle(ObstacleType.SPIKE, V_WIDTH.toFloat(), 1.2f)
+            spawnObstacle(ObstacleType.SPIKE, V_WIDTH.toFloat(), 1f)
         }
-
-
     }
 
     private fun spawnObstacle(obstacleType: ObstacleType, posX: Float, posY: Float) {
@@ -50,14 +46,15 @@ class ObstacleSystem(
                 setInitialPosition(posX, posY, 0f)
             }
             with<ColliderComponent> {
-                modifier = ColliderModifier(0.05f, 0f, 0.8f, 0.2f)
+                modifier = obstacleType.obj.getColliderModifier()
             }
+            with<InteractComponent>()
             with<MoveComponent> {
                 speed.x = -1 * CURRENT_SCROLL_SPEED * SCROLL_SPEED_TO_WORLD_RATIO
             }
             with<ObstacleComponent> { type = obstacleType }
             with<GraphicComponent>()
-            with<AnimationComponent> { type = obstacleType.animationType}
+            with<AnimationComponent> { type = obstacleType.obj.getAnimationType() }
         }
     }
 
@@ -66,6 +63,8 @@ class ObstacleSystem(
         requireNotNull(transform) { "Entity |entity| must have a TransformComponent. entity = $entity" }
         val collider = entity[ColliderComponent.mapper]
         requireNotNull(collider) { "Entity |entity| must have a ColliderComponent. entity = $entity" }
+        val interact = entity[InteractComponent.mapper]
+        requireNotNull(interact) { "Entity |entity| must have a InteractComponent. entity = $entity" }
         val move = entity[MoveComponent.mapper]
         requireNotNull(move) { "Entity |entity| must have a MoveComponent. entity = $entity" }
         val obstacle = entity[ObstacleComponent.mapper]
@@ -96,6 +95,10 @@ class ObstacleSystem(
 
             updateColliderBounding(playerTransform, playerCollider)
 
+            if (playerCollider.bounding.overlaps(interact.zone)) {
+                obstacle.type.obj.onInteraction(entity, playerEntity)
+            }
+
             if (playerCollider.bounding.overlaps(collider.bounding)) {
                 notifyDamage(playerEntity, obstacle.type.obj.getDamage())
             }
@@ -112,6 +115,8 @@ class ObstacleSystem(
     }
 
     private fun notifyDamage(player: Entity, damage: Float) {
+        if (damage <= 0f) return
+
         gameEventManager.dispatchEvent(
             GameEventType.PLAYER_DAMAGED,
             GameEventPlayerDamaged.apply {
