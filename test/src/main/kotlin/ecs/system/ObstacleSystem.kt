@@ -12,6 +12,9 @@ import event.GameEventPlayerDamaged
 import event.GameEventType
 import ktx.ashley.*
 import ktx.log.logger
+import obstacle.Box
+import obstacle.Empty
+import obstacle.Spike
 
 private val LOG = logger<ObstacleSystem>()
 
@@ -36,25 +39,27 @@ class ObstacleSystem(
         spawnTime -= deltaTime
         if (spawnTime <= 0f) {
             spawnTime = MathUtils.random(MIN_SPAWN_INTERVAL, MAX_SPAWN_INTERVAL)
-            spawnObstacle(ObstacleType.SPIKE, V_WIDTH.toFloat(), 1f)
+            spawnObstacle(if (Math.random() > 0.7) ObstacleType.BOX else ObstacleType.SPIKE, V_WIDTH.toFloat(), 1f)
         }
     }
 
     private fun spawnObstacle(obstacleType: ObstacleType, posX: Float, posY: Float) {
+        val obstacle = createObstaceInstance(obstacleType)
         engine.entity {
             with<TransformComponent> {
+                size.set(obstacle.getSize())
                 setInitialPosition(posX, posY, 0f)
             }
             with<ColliderComponent> {
-                modifier = obstacleType.obj.getColliderModifier()
+                modifier = obstacle.getColliderModifier()
             }
             with<InteractComponent>()
             with<MoveComponent> {
                 speed.x = -1 * CURRENT_SCROLL_SPEED * SCROLL_SPEED_TO_WORLD_RATIO
             }
-            with<ObstacleComponent> { type = obstacleType }
+            with<ObstacleComponent> { instance = obstacle }
             with<GraphicComponent>()
-            with<AnimationComponent> { type = obstacleType.obj.getAnimationType() }
+            with<AnimationComponent> { type = obstacle.getAnimationType() }
         }
     }
 
@@ -91,15 +96,23 @@ class ObstacleSystem(
             requireNotNull(playerCollider) { "Entity |entity| must have a ColliderComponent. entity = $entity" }
 
             if (playerCollider.bounding.overlaps(interact.zone)) {
-                obstacle.type.obj.onInteraction(entity, playerEntity)
+                obstacle.instance.onInteraction(entity, playerEntity, engine)
             }
 
             if (playerCollider.bounding.overlaps(collider.bounding)) {
-                notifyDamage(playerEntity, obstacle.type.obj.getDamage())
+                notifyDamage(playerEntity, obstacle.instance.getDamage())
             }
         }
     }
 
+
+    private fun createObstaceInstance(type: ObstacleType): Obstacle {
+        return when {
+            type.equals(ObstacleType.SPIKE) -> Spike()
+            type.equals(ObstacleType.BOX) -> Box()
+            else -> Empty()
+        }
+    }
     private fun notifyDamage(player: Entity, damage: Float) {
         if (damage <= 0f) return
 
