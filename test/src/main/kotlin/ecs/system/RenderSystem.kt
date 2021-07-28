@@ -19,6 +19,7 @@ import ktx.ashley.allOf
 import ktx.ashley.get
 import ktx.graphics.use
 import ktx.log.error
+import ktx.log.info
 import ktx.log.logger
 
 private val LOG = logger<RenderSystem>()
@@ -44,17 +45,22 @@ class RenderSystem(
     private val backgroundScrollSpeed = Vector2()
 
     override fun update(deltaTime: Float) {
+        backgroundScrollSpeed.set(CURRENT_SCROLL_SPEED, 0f)
+
+        backgrounds.withIndex().forEach { bkground ->
+            bkground.value.run {
+                scroll(
+                    bkground.index.toFloat() / 4 * backgroundScrollSpeed.x * deltaTime,
+                    bkground.index.toFloat() / 4 * backgroundScrollSpeed.y * deltaTime)
+            }
+        }
+
+        platform.scroll(backgroundScrollSpeed.x * deltaTime, backgroundScrollSpeed.y * deltaTime)
+
         // render background
         uiViewport.apply()
         batch.use(uiViewport.camera.combined) {
-            backgrounds.withIndex().forEach { bkground ->
-                bkground.value.run {
-                    scroll(
-             bkground.index.toFloat() / 4 * backgroundScrollSpeed.x * deltaTime,
-            bkground.index.toFloat() / 4 * backgroundScrollSpeed.y * deltaTime)
-                    draw(batch)
-                }
-            }
+            backgrounds.forEach { bg -> bg.draw(batch)}
         }
 
         // render entity & bounding box
@@ -65,10 +71,7 @@ class RenderSystem(
         // render platform
         uiViewport.apply()
         batch.use(uiViewport.camera.combined) {
-            platform.run {
-                scroll(backgroundScrollSpeed.x * deltaTime, backgroundScrollSpeed.y * deltaTime)
-                draw(batch)
-            }
+            platform.draw(batch)
         }
     }
 
@@ -77,8 +80,6 @@ class RenderSystem(
         require(transform != null) { "Entity |entity| must have a TransformComponent. entity = $entity"}
         val graphic = entity[GraphicComponent.mapper]
         requireNotNull(graphic) { "Entity |entity| must have a GraphicComponent. entity = $entity"}
-
-        backgroundScrollSpeed.set(CURRENT_SCROLL_SPEED, 0f)
 
         if (graphic.sprite.texture == null) {
             LOG.error { "Entity has no texture for rendering. entity=$entity" }

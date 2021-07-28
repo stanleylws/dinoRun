@@ -20,11 +20,11 @@ const val V_HEIGHT = 9
 const val V_WIDTH_PIXELS = 384
 const val V_HEIGHT_PIXELS = 216
 
-const val IN_DEBUGGING = false
+const val IN_DEBUGGING = true
 
 const val SCROLL_SPEED_TO_WORLD_RATIO =  1f / 0.0625f
 const val DEFAULT_SCROLL_SPEED = 0.05f
-var CURRENT_SCROLL_SPEED = DEFAULT_SCROLL_SPEED.toFloat()
+var CURRENT_SCROLL_SPEED = DEFAULT_SCROLL_SPEED
 
 class MyGame: KtxGame<KtxScreen>() {
     lateinit var batch: SpriteBatch
@@ -60,6 +60,7 @@ class MyGame: KtxGame<KtxScreen>() {
             addSystem(AnimationSystem(animationAtlas))
             addSystem(RenderSystem(shapeRenderer, batch, gameViewport, uiViewport, backgroundTextures, platformTexture))
             addSystem(RemoveSystem())
+            addSystem(DebugSystem())
         }
 
         addScreen(GameScreen(this))
