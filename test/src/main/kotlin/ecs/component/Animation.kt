@@ -23,7 +23,9 @@ enum class AnimationType(
     SPIKE("spike_idle"),
     BOX_IDLE("box_idle"),
     BOX_HIT("box_hit", 0.5f, Animation.PlayMode.NORMAL),
-    BOX_BREAK("box_break", 0.5f, Animation.PlayMode.NORMAL)
+    BOX_BREAK("box_break", 0.5f, Animation.PlayMode.NORMAL),
+    HEART("heart"),
+    DIAMOND("diamond")
 }
 
 class Animation2D(

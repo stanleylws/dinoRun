@@ -20,8 +20,6 @@ private val LOG = logger<ObstacleSystem>()
 
 private const val MAX_SPAWN_INTERVAL = 4.5f
 private const val MIN_SPAWN_INTERVAL = 2.9f
-private const val LIFE_GAIN = 25f
-private const val SHIELD_GAIN = 25f
 
 class ObstacleSystem(
     private val gameEventManager: GameEventManager
@@ -44,7 +42,7 @@ class ObstacleSystem(
     }
 
     private fun spawnObstacle(obstacleType: ObstacleType, posX: Float, posY: Float) {
-        val obstacle = createObstaceInstance(obstacleType)
+        val obstacle = createObstacleInstance(obstacleType)
         engine.entity {
             with<TransformComponent> {
                 size.set(obstacle.getSize())
@@ -90,10 +88,8 @@ class ObstacleSystem(
         )
 
         playerEntities.forEach { playerEntity ->
-            val playerTransform = playerEntity[TransformComponent.mapper]
-            requireNotNull(playerTransform) { "Entity |entity| must have a TransformComponent. entity = $entity" }
             val playerCollider = playerEntity[ColliderComponent.mapper]
-            requireNotNull(playerCollider) { "Entity |entity| must have a ColliderComponent. entity = $entity" }
+            requireNotNull(playerCollider) { "Entity |entity| must have a ColliderComponent. entity = $playerEntity" }
 
             if (playerCollider.bounding.overlaps(interact.zone)) {
                 obstacle.instance.onInteraction(entity, playerEntity, engine)
@@ -106,7 +102,7 @@ class ObstacleSystem(
     }
 
 
-    private fun createObstaceInstance(type: ObstacleType): Obstacle {
+    private fun createObstacleInstance(type: ObstacleType): Obstacle {
         return when {
             type.equals(ObstacleType.SPIKE) -> Spike()
             type.equals(ObstacleType.BOX) -> Box()

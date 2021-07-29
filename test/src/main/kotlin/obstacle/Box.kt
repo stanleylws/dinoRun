@@ -4,19 +4,27 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.math.Vector3
 import ecs.component.*
+import ecs.system.POWER_UP_HEIGHT
 import ktx.ashley.addComponent
+import ktx.ashley.entity
 import ktx.ashley.get
+import ktx.ashley.with
 import kotlin.math.max
+import kotlin.random.Random.Default.nextInt
 
-private const val HIT_ANIMATION_DURATION = 0.5f
+private const val HIT_ANIMATION_DURATION = 0.4f
 private const val HIT_BUFFER_TIME = 0.8f
+private const val POWER_UP_SPAWN_SPEED = 5f
+private const val POWER_UP_SPAWN_Y_OFFSET = 0.2f
 
 class Box: Obstacle {
     private val size = Vector2(1.5f, 1.5f)
     private val damage = 0f
     private val animationType = AnimationType.BOX_IDLE
     private val colliderModifier = ColliderModifier()
+    private val numOfHitToBreak = nextInt(1,5)
     private var hitBuffer = 0f
     private var hitCount = 0
 
@@ -61,7 +69,7 @@ class Box: Obstacle {
     override fun performAction(self: Entity, other: Entity, engine: Engine) {
 
         self[AnimationComponent.mapper]?.let { animation ->
-            if (hitCount < 2) {
+            if (hitCount < numOfHitToBreak) {
                 animation.type = AnimationType.BOX_HIT
                 hitCount++
                 hitBuffer = HIT_BUFFER_TIME
@@ -70,7 +78,25 @@ class Box: Obstacle {
                 self.addComponent<RemoveComponent>(engine) {
                     delay = 0.1f
                 }
+                self[TransformComponent.mapper]?.let { transform ->
+                    spawnPowerUp(PowerUpType.DIAMOND, engine, transform.position)
+                }
             }
+        }
+    }
+
+    private fun spawnPowerUp(powerUpType: PowerUpType, engine: Engine, position: Vector3) {
+        engine.entity {
+            with<TransformComponent> {
+                setInitialPosition(position.x, POWER_UP_HEIGHT + POWER_UP_SPAWN_Y_OFFSET, position.z)
+            }
+            with<ColliderComponent>()
+            with<MoveComponent> {
+                speed.y = POWER_UP_SPAWN_SPEED
+            }
+            with<PowerUpComponent> { type = powerUpType }
+            with<GraphicComponent>()
+            with<AnimationComponent> { type = powerUpType.animationType }
         }
     }
 }

@@ -54,6 +54,7 @@ class MyGame: KtxGame<KtxScreen>() {
         engine.apply {
             addSystem(PlayerInputSystem(gameViewport))
             addSystem(ObstacleSystem(gameEventManager))
+            addSystem(PowerUpSystem())
             addSystem(DamageSystem(gameEventManager))
             addSystem(MoveSystem())
             addSystem(PlayerAnimationSystem())
