@@ -18,7 +18,7 @@ private const val UPDATE_RATE = 1 / 60f
 private val LOG = logger<RenderSystem>()
 
 class MoveSystem:
-    IteratingSystem(allOf(TransformComponent::class, MoveComponent::class).exclude(RemoveComponent::class).get()){
+    IteratingSystem(allOf(TransformComponent::class, MoveComponent::class).get()){
     private var accumulator = 0f
 
     override fun update(deltaTime: Float) {

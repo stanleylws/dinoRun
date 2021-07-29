@@ -52,7 +52,7 @@ class Box: Obstacle {
         if (other[PlayerComponent.mapper] == null) return
 
         hitBuffer = max(0f, hitBuffer - Gdx.graphics.deltaTime)
-        if (hitBuffer <= HIT_ANIMATION_DURATION) {
+        if (HIT_BUFFER_TIME - hitBuffer >= HIT_ANIMATION_DURATION) {
             self[AnimationComponent.mapper]?.let { animation ->
                 animation.type = animationType
             }

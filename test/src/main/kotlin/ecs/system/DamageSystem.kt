@@ -19,7 +19,8 @@ private val LOG = logger<RenderSystem>()
 private const val DAMAGE_MOVE_OFFSET_SCALE = 2.5f
 private const val DAMAGE_AREA_WIDTH = 1f
 private const val DAMAGE_PER_HIT = 1f
-private const val DAMAGE_BUFFER_DURATION = 1f
+private const val HIT_ANIMATION_DURATION = 0.4f
+private const val DAMAGE_BUFFER_DURATION = 1.4f
 private const val DEATH_EXPLOSION_DURATION = 1f
 
 private var immuneTime = 0f
@@ -63,9 +64,14 @@ class DamageSystem(
             requireNotNull(tf) { "Entity |entity| must have a TransformComponent. entity = $entity" }
             val state = playerEntity[StateComponent.mapper]
             requireNotNull(state) { "Entity |entity| must have a StateComponent. entity = $playerEntity" }
+            val graphic = playerEntity[GraphicComponent.mapper]
+            requireNotNull(graphic) { "Entity |entity| must have a GraphicComponent. entity = $playerEntity" }
 
-            if (immuneTime < DAMAGE_BUFFER_DURATION / 2f && state.currentState.equals(State.HURT)) {
+            if (DAMAGE_BUFFER_DURATION - immuneTime >= HIT_ANIMATION_DURATION && state.currentState == State.HURT) {
                 state.currentState = State.IDLE
+                graphic.sprite.setAlpha(0.5f)
+            } else if (immuneTime <= 0f) {
+                graphic.sprite.setAlpha(1f)
             }
 
             if (tf.position.x <= DAMAGE_AREA_WIDTH) {
