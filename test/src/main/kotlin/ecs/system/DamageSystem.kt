@@ -18,7 +18,7 @@ private val LOG = logger<RenderSystem>()
 
 private const val DAMAGE_MOVE_OFFSET_SCALE = 2.5f
 private const val DAMAGE_AREA_WIDTH = 1f
-private const val DAMAGE_PER_HIT = 1f
+private const val DAMAGE_PER_HIT = 1
 private const val HIT_ANIMATION_DURATION = 0.4f
 private const val DAMAGE_BUFFER_DURATION = 1.4f
 private const val DEATH_EXPLOSION_DURATION = 1f
@@ -82,7 +82,7 @@ class DamageSystem(
         }
     }
 
-    private fun doDamage(playerEntity: Entity, damage: Float) {
+    private fun doDamage(playerEntity: Entity, damage: Int) {
         val player = playerEntity[PlayerComponent.mapper]
         requireNotNull(player) { "Entity |entity| must have a PlayerComponent. entity = $playerEntity" }
         val state = playerEntity[StateComponent.mapper]

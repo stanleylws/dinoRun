@@ -9,12 +9,11 @@ import ktx.ashley.addComponent
 import ktx.ashley.allOf
 import ktx.ashley.exclude
 import ktx.ashley.get
-import kotlin.math.max
 import kotlin.math.min
 
 const val POWER_UP_HEIGHT = 1.5f
 const val GRAVITATIONAL_ACCELERATION = 10f
-private const val LIFE_GAIN = 0.5f
+private const val LIFE_GAIN = 1
 
 class PowerUpSystem
     : IteratingSystem(allOf(PowerUpComponent::class).exclude(RemoveComponent::class).get()) {

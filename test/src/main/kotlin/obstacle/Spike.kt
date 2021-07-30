@@ -13,7 +13,7 @@ private val LOG = logger<RenderSystem>()
 
 class Spike: Obstacle {
     private val size = Vector2(1f, 1f)
-    private val damage = 0.5f
+    private val damage = 1
     private val animationType = AnimationType.SPIKE
     private val colliderModifier = ColliderModifier(0.05f, 0f, 0.9f, 0.2f)
 
@@ -25,7 +25,7 @@ class Spike: Obstacle {
         return size
     }
 
-    override fun getDamage(): Float {
+    override fun getDamage(): Int {
         return damage
     }
 

@@ -109,8 +109,8 @@ class ObstacleSystem(
             else -> Empty()
         }
     }
-    private fun notifyDamage(player: Entity, damage: Float) {
-        if (damage <= 0f) return
+    private fun notifyDamage(player: Entity, damage: Int) {
+        if (damage <= 0) return
 
         gameEventManager.dispatchEvent(
             GameEventType.PLAYER_DAMAGED,

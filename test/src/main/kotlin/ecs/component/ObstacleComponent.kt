@@ -13,7 +13,7 @@ import obstacle.Spike
 interface Obstacle {
     fun setSize(width: Float, height: Float)
     fun getSize(): Vector2
-    fun getDamage(): Float
+    fun getDamage(): Int
     fun getAnimationType(): AnimationType
     fun getColliderModifier(): ColliderModifier
     fun onInteraction(self: Entity, other: Entity, engine: Engine)

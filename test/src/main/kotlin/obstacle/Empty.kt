@@ -14,8 +14,8 @@ class Empty: Obstacle {
         return Vector2(1f, 1f)
     }
 
-    override fun getDamage(): Float {
-        return 0f
+    override fun getDamage(): Int {
+        return 0
     }
 
     override fun getAnimationType(): AnimationType {

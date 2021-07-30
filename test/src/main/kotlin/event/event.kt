@@ -12,7 +12,7 @@ interface GameEvent
 
 object GameEventPlayerDamaged: GameEvent {
     lateinit var player: Entity
-    var damage = 0f
+    var damage = 0
 
     override fun toString(): String {
         return "GameEventPlayerDamaged(damage=$damage)"

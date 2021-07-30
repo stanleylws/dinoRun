@@ -21,7 +21,7 @@ private const val POWER_UP_SPAWN_Y_OFFSET = 0.2f
 
 class Box: Obstacle {
     private val size = Vector2(1.5f, 1.5f)
-    private val damage = 0f
+    private val damage = 0
     private val animationType = AnimationType.BOX_IDLE
     private val colliderModifier = ColliderModifier()
     private val numOfHitToBreak = nextInt(1,5)
@@ -36,7 +36,7 @@ class Box: Obstacle {
         return size
     }
 
-    override fun getDamage(): Float {
+    override fun getDamage(): Int {
         return damage
     }
 
