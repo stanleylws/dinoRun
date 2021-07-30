@@ -80,13 +80,17 @@ class MoveSystem:
             State.RUN -> player.moveSpeed
             else -> -1 * DEFAULT_SCROLL_SPEED * SCROLL_SPEED_TO_WORLD_RATIO
         }
-        move.speed.y = when(state.currentState) {
+        move.acceletration.y = when(state.currentState) {
+            State.FAINT -> -10f
             else -> 0f
         }
         moveEntity(transform, move, deltaTime)
     }
 
     private fun moveEntity(transform: TransformComponent, move: MoveComponent, deltaTime: Float) {
+        move.speed.x = move.speed.x + move.acceletration.x * deltaTime
+        move.speed.y = move.speed.y + move.acceletration.y * deltaTime
+
         transform.position.x = MathUtils.clamp(
             transform.position.x + move.speed.x * deltaTime,
             -1f,
@@ -94,7 +98,7 @@ class MoveSystem:
         )
         transform.position.y = MathUtils.clamp(
             transform.position.y + move.speed.y * deltaTime,
-            0f,
+            -1f,
             V_HEIGHT + 1f - transform.size.y
         )
     }

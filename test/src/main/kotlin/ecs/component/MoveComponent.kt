@@ -8,9 +8,11 @@ import java.util.*
 
 class MoveComponent: Component, Pool.Poolable {
     val speed = Vector2()
+    val acceletration = Vector2()
 
     override fun reset() {
         speed.set(Vector2.Zero)
+        acceletration.set(Vector2.Zero)
     }
 
     companion object {

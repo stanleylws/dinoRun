@@ -12,7 +12,7 @@ import ktx.ashley.get
 import kotlin.math.min
 
 const val POWER_UP_HEIGHT = 1.5f
-const val GRAVITATIONAL_ACCELERATION = 10f
+const val GRAVITATIONAL_ACCELERATION = -10f
 private const val LIFE_GAIN = 1
 
 class PowerUpSystem
@@ -39,7 +39,12 @@ class PowerUpSystem
         }
 
         move.speed.x = -1 * CURRENT_SCROLL_SPEED * SCROLL_SPEED_TO_WORLD_RATIO + if (transform.position.y > POWER_UP_HEIGHT) 1f else 0f
-        move.speed.y = if (transform.position.y > POWER_UP_HEIGHT) move.speed.y - GRAVITATIONAL_ACCELERATION * deltaTime else 0f
+        if (transform.position.y > POWER_UP_HEIGHT) {
+            move.acceletration.y = GRAVITATIONAL_ACCELERATION
+        } else {
+            move.speed.y = 0f
+            move.acceletration.y = 0f
+        }
 
         playerEntities.forEach { playerEntity ->
             val player = playerEntity[PlayerComponent.mapper]
