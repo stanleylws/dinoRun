@@ -4,6 +4,10 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.utils.Pool
 import ktx.ashley.mapperFor
 
+enum class State {
+    IDLE, WALK, RUN, ATTACK, HURT, FAINT
+}
+
 class StateComponent: Component, Pool.Poolable {
     var currentState = State.IDLE
 
@@ -14,8 +18,4 @@ class StateComponent: Component, Pool.Poolable {
     companion object {
         val mapper = mapperFor<StateComponent>()
     }
-}
-
-enum class State {
-    IDLE, WALK, RUN, ATTACK, HURT
 }

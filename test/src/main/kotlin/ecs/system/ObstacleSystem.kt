@@ -1,5 +1,6 @@
 package ecs.system
 
+import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.MathUtils
@@ -7,10 +8,9 @@ import core.CURRENT_SCROLL_SPEED
 import core.SCROLL_SPEED_TO_WORLD_RATIO
 import core.V_WIDTH
 import ecs.component.*
-import event.GameEventManager
-import event.GameEventPlayerDamaged
-import event.GameEventType
+import event.*
 import ktx.ashley.*
+import ktx.log.info
 import ktx.log.logger
 import obstacle.Box
 import obstacle.Empty
@@ -23,19 +23,31 @@ private const val MIN_SPAWN_INTERVAL = 2.9f
 
 class ObstacleSystem(
     private val gameEventManager: GameEventManager
-): IteratingSystem(allOf(ObstacleComponent::class, TransformComponent::class, MoveComponent::class).exclude(RemoveComponent::class).get()){
+): GameEventListener,
+    IteratingSystem(allOf(ObstacleComponent::class, TransformComponent::class, MoveComponent::class).exclude(RemoveComponent::class).get()){
     private val playerEntities by lazy {
         engine.getEntitiesFor(
             allOf(PlayerComponent::class).exclude(RemoveComponent::class).get()
         )
     }
 
+    private var spawn = true
     private var spawnTime = 0f
+
+    override fun addedToEngine(engine: Engine?) {
+        super.addedToEngine(engine)
+        gameEventManager.addListener(GameEventType.PLAYER_DEATH, this)
+    }
+
+    override fun removedFromEngine(engine: Engine?) {
+        super.removedFromEngine(engine)
+        gameEventManager.removeListener(this)
+    }
 
     override fun update(deltaTime: Float) {
         super.update(deltaTime)
         spawnTime -= deltaTime
-        if (spawnTime <= 0f) {
+        if (spawn && spawnTime <= 0f) {
             spawnTime = MathUtils.random(MIN_SPAWN_INTERVAL, MAX_SPAWN_INTERVAL)
             spawnObstacle(if (Math.random() > 0.7) ObstacleType.BOX else ObstacleType.SPIKE, V_WIDTH.toFloat(), 1f)
         }
@@ -59,6 +71,7 @@ class ObstacleSystem(
             with<GraphicComponent>()
             with<AnimationComponent> { type = obstacle.getAnimationType() }
         }
+        LOG.info { "spawn obstacle $obstacleType" }
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
@@ -119,5 +132,11 @@ class ObstacleSystem(
                 this.damage = damage
             }
         )
+    }
+
+    override fun onEvent(type: GameEventType, data: GameEvent?) {
+        if (type == GameEventType.PLAYER_DEATH) {
+            spawn = false
+        }
     }
 }

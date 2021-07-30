@@ -5,7 +5,8 @@ import ktx.collections.GdxSet
 import java.util.*
 
 enum class GameEventType {
-    PLAYER_DAMAGED
+    PLAYER_DAMAGED,
+    PLAYER_DEATH
 }
 
 interface GameEvent
@@ -16,6 +17,14 @@ object GameEventPlayerDamaged: GameEvent {
 
     override fun toString(): String {
         return "GameEventPlayerDamaged(damage=$damage)"
+    }
+}
+
+object GameEventPlayerDeath: GameEvent {
+    var distance = 0
+
+    override fun toString(): String {
+        return "GameEventPlayerDeath(distance=$distance)"
     }
 }
 

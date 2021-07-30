@@ -10,6 +10,7 @@ import core.CURRENT_SCROLL_SPEED
 import core.DEFAULT_SCROLL_SPEED
 import ecs.component.*
 import ktx.ashley.allOf
+import ktx.ashley.exclude
 import ktx.ashley.get
 import ktx.log.logger
 import kotlin.math.max
@@ -20,8 +21,8 @@ private const val TOUCH_INTERVAL = 0.25f
 
 class PlayerInputSystem(
     private val gameViewport: Viewport
-): IteratingSystem(allOf(PlayerComponent::class, TransformComponent::class, StateComponent::class).get()) {
-    private val tmpVec = Vector2()
+): IteratingSystem(allOf(PlayerComponent::class, TransformComponent::class, StateComponent::class)
+    .exclude(RemoveComponent::class).get()) {
     private var touchInterval = 0f
     private var touchCount = 0
 
@@ -30,7 +31,6 @@ class PlayerInputSystem(
         requireNotNull(state) { "Entity |entity| must have a StateComponent. entity = $entity" }
         val transform = entity[TransformComponent.mapper]
         requireNotNull(transform) { "Entity |entity| must have a TransformComponent. entity = $entity" }
-
 
         touchInterval = max(0f, touchInterval - deltaTime)
         if (touchInterval <= 0f && touchCount > 0 && !Gdx.input.isTouched(0)) touchCount = 0

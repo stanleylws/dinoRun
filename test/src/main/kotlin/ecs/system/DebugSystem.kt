@@ -6,6 +6,7 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import core.IN_DEBUGGING
+import ecs.component.MoveComponent
 import ecs.component.PlayerComponent
 import ecs.component.TransformComponent
 import ktx.ashley.allOf
@@ -22,7 +23,9 @@ class DebugSystem: IteratingSystem(allOf(PlayerComponent::class).get()) {
         requireNotNull(transform) { "Entity |entity| must have a TransformComponent. entity = $entity" }
         val player = entity[PlayerComponent.mapper]
         requireNotNull(player) { "Entity |entity| must have a PlayerComponent. entity = $entity" }
+        val move = entity[MoveComponent.mapper]
+        requireNotNull(move) { "Entity |entity| must have a MoveComponent. entity = $entity" }
 
-        Gdx.graphics.setTitle("DM Debug - fps:${(1 / delta).toInt()} life: ${player.life}")
+        Gdx.graphics.setTitle("fps:${(1 / delta).toInt()} life: ${player.life} speed:${move.speed} acc: ${move.acceletration}")
     }
 }

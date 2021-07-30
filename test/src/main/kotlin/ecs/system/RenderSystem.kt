@@ -1,5 +1,6 @@
 package ecs.system
 
+import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.SortedIteratingSystem
 import com.badlogic.gdx.graphics.Color
@@ -13,6 +14,10 @@ import com.badlogic.gdx.utils.viewport.Viewport
 import core.CURRENT_SCROLL_SPEED
 import core.IN_DEBUGGING
 import ecs.component.*
+import event.GameEvent
+import event.GameEventListener
+import event.GameEventManager
+import event.GameEventType
 import ktx.ashley.allOf
 import ktx.ashley.get
 import ktx.graphics.use
@@ -23,6 +28,7 @@ import ktx.log.logger
 private val LOG = logger<RenderSystem>()
 
 class RenderSystem(
+    private val gameEventManager: GameEventManager,
     private val batch: Batch,
     private val font: BitmapFont,
     private val shapeRenderer: ShapeRenderer,
@@ -30,7 +36,8 @@ class RenderSystem(
     private val uiViewport: Viewport,
     backgroundTextures: Array<Texture>,
     platformTexture: Texture,
-): SortedIteratingSystem(
+): GameEventListener,
+    SortedIteratingSystem(
     allOf(TransformComponent::class, GraphicComponent::class).get(),
     compareBy { entity -> entity[TransformComponent.mapper]}
 ) {
@@ -40,6 +47,16 @@ class RenderSystem(
         Sprite(texture)
     }
     private val backgroundScrollSpeed = Vector2()
+
+    override fun addedToEngine(engine: Engine?) {
+        super.addedToEngine(engine)
+        gameEventManager.addListener(GameEventType.PLAYER_DEATH, this)
+    }
+
+    override fun removedFromEngine(engine: Engine?) {
+        super.removedFromEngine(engine)
+        gameEventManager.removeListener(this)
+    }
 
     override fun update(deltaTime: Float) {
         backgroundScrollSpeed.set(CURRENT_SCROLL_SPEED, 0f)
@@ -107,6 +124,12 @@ class RenderSystem(
                         interact.zone.width, interact.zone.height)
                 }
             }
+        }
+    }
+
+    override fun onEvent(type: GameEventType, data: GameEvent?) {
+        if (type == GameEventType.PLAYER_DEATH) {
+            CURRENT_SCROLL_SPEED = 0f
         }
     }
 }

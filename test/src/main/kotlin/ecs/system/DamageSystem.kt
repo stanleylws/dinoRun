@@ -21,7 +21,7 @@ private const val DAMAGE_AREA_WIDTH = 1f
 private const val DAMAGE_PER_HIT = 1
 private const val HIT_ANIMATION_DURATION = 0.4f
 private const val DAMAGE_BUFFER_DURATION = 1.4f
-private const val DEATH_EXPLOSION_DURATION = 1f
+private const val DEATH_EXPLOSION_DURATION = 2f
 
 private var immuneTime = 0f
 
@@ -106,6 +106,9 @@ class DamageSystem(
             playerEntity.addComponent<RemoveComponent>(engine) {
                 delay = DEATH_EXPLOSION_DURATION
             }
+            gameEventManager.dispatchEvent(GameEventType.PLAYER_DEATH, GameEventPlayerDeath.apply { distance = 0 })
+            state.currentState = State.FAINT
+            playerEntity[MoveComponent.mapper]?.let { move -> move.speed.y = 5f }
         }
     }
 

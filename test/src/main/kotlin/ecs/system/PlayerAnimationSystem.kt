@@ -39,6 +39,7 @@ class PlayerAnimationSystem: IteratingSystem(allOf(PlayerComponent::class, State
             State.RUN -> AnimationType.DINO_RUN
             State.ATTACK -> AnimationType.DINO_ATTACK
             State.HURT -> AnimationType.DINO_HURT
+            State.FAINT -> AnimationType.DINO_HURT
             else -> AnimationType.DINO_IDLE
         }
     }
