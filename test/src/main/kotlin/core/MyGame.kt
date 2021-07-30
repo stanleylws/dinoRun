@@ -29,7 +29,7 @@ var CURRENT_SCROLL_SPEED = DEFAULT_SCROLL_SPEED
 class MyGame: KtxGame<KtxScreen>() {
     lateinit var batch: SpriteBatch
     lateinit var font: BitmapFont
-    lateinit var shapeRenderer: ShapeRenderer
+    lateinit var shape: ShapeRenderer
 
     private lateinit var animationAtlas: TextureAtlas
     private lateinit var platformTexture: Texture
@@ -43,7 +43,7 @@ class MyGame: KtxGame<KtxScreen>() {
     override fun create() {
         batch = SpriteBatch()
         font = BitmapFont()
-        shapeRenderer = ShapeRenderer()
+        shape = ShapeRenderer()
 
         animationAtlas = TextureAtlas(Gdx.files.internal("assets/atlas/animation.atlas"))
         backgroundTextures = Array(5) { i ->
@@ -60,7 +60,7 @@ class MyGame: KtxGame<KtxScreen>() {
             addSystem(MoveSystem())
             addSystem(PlayerAnimationSystem())
             addSystem(AnimationSystem(animationAtlas))
-            addSystem(RenderSystem(shapeRenderer, batch, gameViewport, uiViewport, backgroundTextures, platformTexture))
+            addSystem(RenderSystem(batch, font, shape, gameViewport, uiViewport, backgroundTextures, platformTexture))
             addSystem(RemoveSystem())
             addSystem(DebugSystem())
         }
@@ -75,7 +75,12 @@ class MyGame: KtxGame<KtxScreen>() {
 
     override fun dispose() {
         super.dispose()
+        batch.dispose()
+        font.dispose()
+        shape.dispose()
+
         animationAtlas.dispose()
+        platformTexture.dispose()
         backgroundTextures.forEach { it.dispose() }
     }
 }

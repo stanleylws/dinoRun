@@ -5,16 +5,14 @@ import com.badlogic.ashley.systems.SortedIteratingSystem
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.viewport.Viewport
 import core.CURRENT_SCROLL_SPEED
 import core.IN_DEBUGGING
-import ecs.component.ColliderComponent
-import ecs.component.GraphicComponent
-import ecs.component.InteractComponent
-import ecs.component.TransformComponent
+import ecs.component.*
 import ktx.ashley.allOf
 import ktx.ashley.get
 import ktx.graphics.use
@@ -25,18 +23,17 @@ import ktx.log.logger
 private val LOG = logger<RenderSystem>()
 
 class RenderSystem(
-    private val shapeRenderer: ShapeRenderer,
     private val batch: Batch,
+    private val font: BitmapFont,
+    private val shapeRenderer: ShapeRenderer,
     private val gameViewport: Viewport,
     private val uiViewport: Viewport,
     backgroundTextures: Array<Texture>,
-    platformTexture: Texture
+    platformTexture: Texture,
 ): SortedIteratingSystem(
     allOf(TransformComponent::class, GraphicComponent::class).get(),
     compareBy { entity -> entity[TransformComponent.mapper]}
 ) {
-
-
     private val platform = Sprite(platformTexture.apply { setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat) })
     private val backgrounds = backgroundTextures.map { texture ->
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
@@ -60,7 +57,7 @@ class RenderSystem(
         // render background
         uiViewport.apply()
         batch.use(uiViewport.camera.combined) {
-            backgrounds.forEach { bg -> bg.draw(batch)}
+            backgrounds.forEach { bg -> bg.draw(it)}
         }
 
         // render entity & bounding box
@@ -71,7 +68,7 @@ class RenderSystem(
         // render platform
         uiViewport.apply()
         batch.use(uiViewport.camera.combined) {
-            platform.draw(batch)
+            platform.draw(it)
         }
     }
 
@@ -90,18 +87,20 @@ class RenderSystem(
             graphic.sprite.run {
                 rotation = transform.rotationDeg
                 setBounds(transform.interpolatedPosition.x, transform.interpolatedPosition.y, transform.size.x, transform.size.y)
-                draw(batch)
+                draw(it)
             }
         }
 
         if (IN_DEBUGGING) {
             shapeRenderer.use(ShapeRenderer.ShapeType.Line, gameViewport.camera.combined) {
+                // render collider
                 entity[ColliderComponent.mapper]?.let { collider ->
                     shapeRenderer.setColor(Color.GREEN)
                     shapeRenderer.rect(collider.bounding.x, collider.bounding.y,
                         collider.bounding.width, collider.bounding.height)
                 }
 
+                // render interaction zone
                 entity[InteractComponent.mapper]?.let { interact ->
                     shapeRenderer.setColor(Color.RED)
                     shapeRenderer.rect(interact.zone.x, interact.zone.y,
