@@ -24,8 +24,12 @@ enum class AnimationType(
     BOX_IDLE("box_idle"),
     BOX_HIT("box_hit", 0.5f, Animation.PlayMode.NORMAL),
     BOX_BREAK("box_break", 0.5f, Animation.PlayMode.NORMAL),
-    HEART("heart"),
-    DIAMOND("diamond")
+    HEART("heart", 0.5f),
+    DIAMOND("diamond", 0.5f),
+    LIFE_UI_EMPTY("heart_empty"),
+    LIFE_UI_ONE_HEART("heart_1", 0.5f),
+    LIFE_UI_TWO_HEART("heart_2", 0.5f),
+    LIFE_UI_THREE_HEART("heart_3", 0.5f)
 }
 
 class Animation2D(

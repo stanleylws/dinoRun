@@ -56,6 +56,7 @@ class MyGame: KtxGame<KtxScreen>() {
             addSystem(ObstacleSystem(gameEventManager))
             addSystem(PowerUpSystem())
             addSystem(DamageSystem(gameEventManager))
+            addSystem(LifeBarAnimationSystem())
             addSystem(MoveSystem())
             addSystem(PlayerAnimationSystem())
             addSystem(AnimationSystem(animationAtlas))

@@ -36,6 +36,17 @@ class GameScreen(private val game: MyGame) : KtxScreen {
         rainMusic = Gdx.audio.newMusic(Gdx.files.internal("assets/music/rain.mp3"))
         rainMusic.isLooping = true
 
+        // create life bar
+        game.engine.entity {
+            with<TransformComponent> {
+                size.set(4f, 2f)
+                setInitialPosition(0.5f, 6.8f,3f)
+            }
+            with<LifeBarComponent>()
+            with<GraphicComponent>()
+            with<AnimationComponent> { type = AnimationType.LIFE_UI_EMPTY }
+        }
+
         repeat(6){ index ->
             var randomSize = 5f + Math.random().toFloat() * GOLDEN_RATIO
             game.engine.entity {
