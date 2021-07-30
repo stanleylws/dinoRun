@@ -10,7 +10,6 @@ import ktx.ashley.addComponent
 import ktx.ashley.allOf
 import ktx.ashley.exclude
 import ktx.ashley.get
-import ktx.log.info
 import ktx.log.logger
 import kotlin.math.max
 
@@ -38,12 +37,12 @@ class DamageSystem(
 
     override fun addedToEngine(engine: Engine?) {
         super.addedToEngine(engine)
-        gameEventManager.addListener(GameEventType.PLAYER_DAMAGED, this)
+        gameEventManager.addListener(GameEvent.PlayerDamaged::class, this)
     }
 
     override fun removedFromEngine(engine: Engine?) {
         super.removedFromEngine(engine)
-        gameEventManager.removeListener(GameEventType.PLAYER_DAMAGED, this)
+        gameEventManager.removeListener(GameEvent.PlayerDamaged::class,this)
     }
 
     override fun update(deltaTime: Float) {
@@ -106,16 +105,14 @@ class DamageSystem(
             playerEntity.addComponent<RemoveComponent>(engine) {
                 delay = DEATH_EXPLOSION_DURATION
             }
-            gameEventManager.dispatchEvent(GameEventType.PLAYER_DEATH, GameEventPlayerDeath.apply { distance = 0 })
+            gameEventManager.dispatchEvent(GameEvent.PlayerDeath.apply { distance = 0 })
             state.currentState = State.FAINT
             playerEntity[MoveComponent.mapper]?.let { move -> move.speed.y = 5f }
         }
     }
 
-    override fun onEvent(type: GameEventType, data: GameEvent?) {
-        if (type == GameEventType.PLAYER_DAMAGED) {
-            val eventData = data as GameEventPlayerDamaged
-            doDamage(eventData.player, eventData.damage)
-        }
+    override fun onEvent(event: GameEvent) {
+        val damageEvent = event as GameEvent.PlayerDamaged
+        doDamage(damageEvent.player, damageEvent.damage)
     }
 }

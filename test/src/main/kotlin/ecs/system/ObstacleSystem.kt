@@ -36,12 +36,12 @@ class ObstacleSystem(
 
     override fun addedToEngine(engine: Engine?) {
         super.addedToEngine(engine)
-        gameEventManager.addListener(GameEventType.PLAYER_DEATH, this)
+        gameEventManager.addListener(GameEvent.PlayerDeath::class, this)
     }
 
     override fun removedFromEngine(engine: Engine?) {
         super.removedFromEngine(engine)
-        gameEventManager.removeListener(this)
+        gameEventManager.removeListener(GameEvent.PlayerDeath::class, this)
     }
 
     override fun update(deltaTime: Float) {
@@ -126,17 +126,14 @@ class ObstacleSystem(
         if (damage <= 0) return
 
         gameEventManager.dispatchEvent(
-            GameEventType.PLAYER_DAMAGED,
-            GameEventPlayerDamaged.apply {
+            GameEvent.PlayerDamaged.apply {
                 this.player = player
                 this.damage = damage
             }
         )
     }
 
-    override fun onEvent(type: GameEventType, data: GameEvent?) {
-        if (type == GameEventType.PLAYER_DEATH) {
-            spawn = false
-        }
+    override fun onEvent(event: GameEvent) {
+        spawn = false
     }
 }

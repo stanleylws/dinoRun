@@ -79,13 +79,13 @@ class Box: Obstacle {
                     delay = 0.1f
                 }
                 self[TransformComponent.mapper]?.let { transform ->
-                    spawnPowerUp(PowerUpType.DIAMOND, engine, transform.position)
+                    spawnCollectable(CollectableType.DIAMOND, engine, transform.position)
                 }
             }
         }
     }
 
-    private fun spawnPowerUp(powerUpType: PowerUpType, engine: Engine, position: Vector3) {
+    private fun spawnCollectable(collectableType: CollectableType, engine: Engine, position: Vector3) {
         engine.entity {
             with<TransformComponent> {
                 setInitialPosition(position.x, POWER_UP_HEIGHT + POWER_UP_SPAWN_Y_OFFSET, position.z)
@@ -94,9 +94,9 @@ class Box: Obstacle {
             with<MoveComponent> {
                 speed.y = POWER_UP_SPAWN_SPEED
             }
-            with<PowerUpComponent> { type = powerUpType }
+            with<CollectableComponent> { type = collectableType }
             with<GraphicComponent>()
-            with<AnimationComponent> { type = powerUpType.animationType }
+            with<AnimationComponent> { type = collectableType.animationType }
         }
     }
 }

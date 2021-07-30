@@ -1,58 +1,55 @@
 package event
 
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.utils.ObjectMap
 import ktx.collections.GdxSet
 import java.util.*
+import kotlin.reflect.KClass
 
-enum class GameEventType {
-    PLAYER_DAMAGED,
-    PLAYER_DEATH
-}
+sealed class GameEvent {
+    object PlayerDamaged: GameEvent() {
+        lateinit var player: Entity
+        var damage = 0
 
-interface GameEvent
-
-object GameEventPlayerDamaged: GameEvent {
-    lateinit var player: Entity
-    var damage = 0
-
-    override fun toString(): String {
-        return "GameEventPlayerDamaged(damage=$damage)"
+        override fun toString(): String {
+            return "PlayerDamaged(damage=$damage)"
+        }
     }
-}
 
-object GameEventPlayerDeath: GameEvent {
-    var distance = 0
+    object PlayerDeath: GameEvent() {
+        var distance = 0
 
-    override fun toString(): String {
-        return "GameEventPlayerDeath(distance=$distance)"
+        override fun toString(): String {
+            return "PlayerDeath(distance=$distance)"
+        }
     }
 }
 
 interface GameEventListener {
-    fun onEvent(type: GameEventType, data: GameEvent? = null)
+    fun onEvent(event: GameEvent)
 }
 
 class GameEventManager {
-    private val listeners = EnumMap<GameEventType, GdxSet<GameEventListener>>(GameEventType::class.java)
+    private val listeners = ObjectMap<KClass<out GameEvent>, GdxSet<GameEventListener>>()
 
-    fun addListener(type: GameEventType, listener: GameEventListener) {
-        var eventListeners = listeners[type]
+    fun addListener(event: KClass<out GameEvent>, listener: GameEventListener) {
+        var eventListeners = listeners[event]
         if (eventListeners == null) {
             eventListeners = GdxSet()
-            listeners[type] = eventListeners
+            listeners.put(event, eventListeners)
         }
         eventListeners.add(listener)
     }
 
-    fun removeListener(type: GameEventType, listener: GameEventListener) {
-        listeners[type]?.remove(listener)
+    fun removeListener(event: KClass<out GameEvent>, listener: GameEventListener) {
+        listeners[event]?.remove(listener)
     }
 
     fun removeListener(listener: GameEventListener) {
-        listeners.values.forEach { it.remove(listener) }
+        listeners.values().forEach { it.remove(listener) }
     }
 
-    fun dispatchEvent(type: GameEventType, data: GameEvent? = null) {
-        listeners[type]?.forEach { it.onEvent(type, data) }
+    fun dispatchEvent(event: GameEvent) {
+        listeners[event::class]?.forEach { it.onEvent(event) }
     }
 }

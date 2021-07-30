@@ -4,19 +4,19 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.utils.Pool
 import ktx.ashley.mapperFor
 
-enum class PowerUpType(val animationType: AnimationType) {
+enum class CollectableType(val animationType: AnimationType) {
     LIFE(AnimationType.HEART),
     DIAMOND(AnimationType.DIAMOND)
 }
 
-class PowerUpComponent: Component, Pool.Poolable {
-    var type = PowerUpType.LIFE
+class CollectableComponent: Component, Pool.Poolable {
+    var type = CollectableType.LIFE
 
     override fun reset() {
-        type = PowerUpType.LIFE
+        type = CollectableType.LIFE
     }
 
     companion object {
-        val mapper = mapperFor<PowerUpComponent>()
+        val mapper = mapperFor<CollectableComponent>()
     }
 }

@@ -17,12 +17,10 @@ import ecs.component.*
 import event.GameEvent
 import event.GameEventListener
 import event.GameEventManager
-import event.GameEventType
 import ktx.ashley.allOf
 import ktx.ashley.get
 import ktx.graphics.use
 import ktx.log.error
-import ktx.log.info
 import ktx.log.logger
 
 private val LOG = logger<RenderSystem>()
@@ -50,12 +48,12 @@ class RenderSystem(
 
     override fun addedToEngine(engine: Engine?) {
         super.addedToEngine(engine)
-        gameEventManager.addListener(GameEventType.PLAYER_DEATH, this)
+        gameEventManager.addListener(GameEvent.PlayerDeath::class, this)
     }
 
     override fun removedFromEngine(engine: Engine?) {
         super.removedFromEngine(engine)
-        gameEventManager.removeListener(this)
+        gameEventManager.removeListener(GameEvent.PlayerDeath::class, this)
     }
 
     override fun update(deltaTime: Float) {
@@ -127,9 +125,8 @@ class RenderSystem(
         }
     }
 
-    override fun onEvent(type: GameEventType, data: GameEvent?) {
-        if (type == GameEventType.PLAYER_DEATH) {
-            CURRENT_SCROLL_SPEED = 0f
-        }
+    override fun onEvent(event: GameEvent) {
+        val deathEvent = event as GameEvent.PlayerDeath
+        CURRENT_SCROLL_SPEED = 0f
     }
 }

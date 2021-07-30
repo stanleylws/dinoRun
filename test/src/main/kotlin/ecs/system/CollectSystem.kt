@@ -16,7 +16,7 @@ const val GRAVITATIONAL_ACCELERATION = -10f
 private const val LIFE_GAIN = 1
 
 class PowerUpSystem
-    : IteratingSystem(allOf(PowerUpComponent::class).exclude(RemoveComponent::class).get()) {
+    : IteratingSystem(allOf(CollectableComponent::class).exclude(RemoveComponent::class).get()) {
 
     private val playerEntities by lazy {
         engine.getEntitiesFor(
@@ -31,8 +31,8 @@ class PowerUpSystem
         requireNotNull(move) { "Entity |entity| must have a MoveComponent. entity = $entity" }
         val collider = entity[ColliderComponent.mapper]
         requireNotNull(collider) { "Entity |entity| must have a ColliderComponent. entity = $entity" }
-        val powerUp = entity[PowerUpComponent.mapper]
-        requireNotNull(powerUp) { "Entity |entity| must have a ColliderComponent. entity = $entity" }
+        val collectable = entity[CollectableComponent.mapper]
+        requireNotNull(collectable) { "Entity |entity| must have a CollectableComponent. entity = $entity" }
 
         if (transform.position.x <= -1f) {
             entity.addComponent<RemoveComponent>(engine)
@@ -53,10 +53,11 @@ class PowerUpSystem
             requireNotNull(playerCollider) { "Entity |entity| must have a ColliderComponent. entity = $playerEntity" }
 
             if (transform.position.y <= POWER_UP_HEIGHT && playerCollider.bounding.overlaps(collider.bounding)) {
-                when {
-                    powerUp.type.equals(PowerUpType.LIFE) -> player.life = min(player.maxLife, player.life + LIFE_GAIN)
-                }
                 entity.addComponent<RemoveComponent>(engine)
+                when (collectable.type) {
+                    CollectableType.LIFE -> player.life = min(player.maxLife, player.life + LIFE_GAIN)
+                    CollectableType.DIAMOND -> player.diamondCollected++
+                }
             }
         }
     }
