@@ -1,3 +1,5 @@
+package core.screen
+
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Music
 import core.MyGame

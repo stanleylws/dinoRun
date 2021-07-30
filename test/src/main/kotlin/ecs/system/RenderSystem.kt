@@ -19,6 +19,7 @@ import event.GameEventListener
 import event.GameEventManager
 import ktx.ashley.allOf
 import ktx.ashley.get
+import ktx.collections.GdxArray
 import ktx.graphics.use
 import ktx.log.error
 import ktx.log.logger
@@ -32,7 +33,7 @@ class RenderSystem(
     private val shapeRenderer: ShapeRenderer,
     private val gameViewport: Viewport,
     private val uiViewport: Viewport,
-    backgroundTextures: Array<Texture>,
+    backgroundTextures: GdxArray<Texture>,
     platformTexture: Texture,
 ): GameEventListener,
     SortedIteratingSystem(

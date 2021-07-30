@@ -1,6 +1,7 @@
 package core
 
-import GameScreen
+import asset.TextureAsset
+import asset.TextureAtlasAsset
 import com.badlogic.ashley.core.Engine
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
@@ -12,8 +13,14 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.viewport.FitViewport
+import core.screen.GameScreen
+import core.screen.LoadingScreen
 import ecs.system.*
 import event.GameEventManager
+import ktx.assets.async.AssetStorage
+import ktx.async.KtxAsync
+import ktx.collections.flatten
+import ktx.collections.gdxArrayOf
 
 const val V_WIDTH = 16
 const val V_HEIGHT = 9
@@ -31,43 +38,22 @@ class MyGame: KtxGame<KtxScreen>() {
     lateinit var font: BitmapFont
     lateinit var shape: ShapeRenderer
 
-    private lateinit var animationAtlas: TextureAtlas
-    private lateinit var platformTexture: Texture
-    private lateinit var backgroundTextures: Array<Texture>
-
+    val assets: AssetStorage by lazy {
+        KtxAsync.initiate()
+        AssetStorage()
+    }
     val gameViewport = FitViewport(V_WIDTH.toFloat(), V_HEIGHT.toFloat())
     val uiViewport = FitViewport(V_WIDTH_PIXELS.toFloat(), V_HEIGHT_PIXELS.toFloat())
     val gameEventManager = GameEventManager()
     val engine: Engine = PooledEngine()
 
     override fun create() {
+        addScreen(LoadingScreen(this))
+        setScreen<LoadingScreen>()
+
         batch = SpriteBatch()
         font = BitmapFont()
         shape = ShapeRenderer()
-
-        animationAtlas = TextureAtlas(Gdx.files.internal("assets/atlas/animation.atlas"))
-        backgroundTextures = Array(5) { i ->
-            Texture(Gdx.files.internal("assets/backgrounds/plx-${i + 1}.png"))
-        }
-        platformTexture = Texture(Gdx.files.internal("assets/maps/platform.png"))
-
-        engine.apply {
-            addSystem(PlayerInputSystem(gameViewport))
-            addSystem(ObstacleSystem(gameEventManager))
-            addSystem(PowerUpSystem())
-            addSystem(DamageSystem(gameEventManager))
-            addSystem(LifeBarAnimationSystem())
-            addSystem(MoveSystem())
-            addSystem(PlayerAnimationSystem())
-            addSystem(AnimationSystem(animationAtlas))
-            addSystem(RenderSystem(gameEventManager, batch, font, shape, gameViewport, uiViewport,
-                backgroundTextures, platformTexture))
-            addSystem(RemoveSystem())
-            addSystem(DebugSystem())
-        }
-
-        addScreen(GameScreen(this))
-        setScreen<GameScreen>()
     }
 
     override fun render() {
@@ -79,9 +65,6 @@ class MyGame: KtxGame<KtxScreen>() {
         batch.dispose()
         font.dispose()
         shape.dispose()
-
-        animationAtlas.dispose()
-        platformTexture.dispose()
-        backgroundTextures.forEach { it.dispose() }
+        assets.dispose()
     }
 }
