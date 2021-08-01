@@ -1,5 +1,6 @@
 package ecs.system
 
+import audio.DefaultAudioService
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntityListener
@@ -18,7 +19,8 @@ import java.util.*
 private val LOG = logger<RenderSystem>()
 
 class AnimationSystem(
-    private val atlas: TextureAtlas
+    private val atlas: TextureAtlas,
+    private val audioService: DefaultAudioService
 ) : IteratingSystem(allOf(AnimationComponent::class, GraphicComponent::class).get()), EntityListener {
     private val animationCache = EnumMap<AnimationType, Animation2D>(AnimationType::class.java)
 
@@ -65,11 +67,20 @@ class AnimationSystem(
         if (animation.type == animation.animation.type) {
             animation.stateTime += deltaTime
         } else {
+            // stop previous animation sound when animation changes
+            animation.animation.type.soundAsset?.let {
+                audioService.stopSound(it)
+            }
+
             animation.stateTime = 0f
             animation.animation = getAnimation(animation.type)
+            animation.type.soundAsset?.let {
+                audioService.play(it, animation.type.volume, animation.type.loopSound)
+            }
         }
 
-        val frame = animation.animation.getKeyFrame(animation.stateTime + animation.offsetTime)
+        val stateTime = animation.stateTime + animation.offsetTime
+        val frame = animation.animation.getKeyFrame(stateTime)
         graphic.setSpriteRegion(frame)
     }
 }

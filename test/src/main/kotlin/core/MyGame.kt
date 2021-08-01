@@ -2,6 +2,7 @@ package core
 
 import asset.TextureAsset
 import asset.TextureAtlasAsset
+import audio.DefaultAudioService
 import com.badlogic.ashley.core.Engine
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
@@ -42,6 +43,7 @@ class MyGame: KtxGame<KtxScreen>() {
         KtxAsync.initiate()
         AssetStorage()
     }
+    val audioService by lazy { DefaultAudioService(assets) }
     val gameViewport = FitViewport(V_WIDTH.toFloat(), V_HEIGHT.toFloat())
     val uiViewport = FitViewport(V_WIDTH_PIXELS.toFloat(), V_HEIGHT_PIXELS.toFloat())
     val gameEventManager = GameEventManager()

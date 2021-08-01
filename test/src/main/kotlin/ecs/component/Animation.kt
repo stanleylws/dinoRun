@@ -1,5 +1,6 @@
 package ecs.component
 
+import asset.SoundAsset
 import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.TextureRegion
@@ -11,19 +12,22 @@ private const val DEFAULT_FRAME_DURATION = 1 / 20f
 enum class AnimationType(
     val key: String,
     val speedRate: Float = 1f,
-    val playMode: Animation.PlayMode = Animation.PlayMode.LOOP
+    val playMode: Animation.PlayMode = Animation.PlayMode.LOOP,
+    val soundAsset: SoundAsset? = null,
+    val volume: Float = 1f,
+    val loopSound: Boolean = false
 ) {
     NONE(""),
     DINO_IDLE("dino_idle", 0.5f),
-    DINO_WALK("dino_walk", 0.5f),
-    DINO_RUN("dino_run", 0.5f),
+    DINO_WALK("dino_walk", 0.5f, soundAsset = SoundAsset.PLAYER_WALK, volume = 0.2f, loopSound = true),
+    DINO_RUN("dino_run", 0.5f, soundAsset = SoundAsset.PLAYER_RUN, volume = 0.2f, loopSound = true),
     DINO_ATTACK("dino_kick", 0.5f, Animation.PlayMode.NORMAL),
-    DINO_HURT("dino_hurt", 0.5f, Animation.PlayMode.NORMAL),
+    DINO_HURT("dino_hurt", 0.5f, Animation.PlayMode.NORMAL, SoundAsset.PLAYER_DAMAGED, 0.2f),
     EXPLOSION("explosion", 7f),
     SPIKE("spike_idle"),
     BOX_IDLE("box_idle"),
-    BOX_HIT("box_hit", 0.5f, Animation.PlayMode.NORMAL),
-    BOX_BREAK("box_break", 0.5f, Animation.PlayMode.NORMAL),
+    BOX_HIT("box_hit", 0.5f, Animation.PlayMode.NORMAL, SoundAsset.BOX_HIT, 0.2f),
+    BOX_BREAK("box_break", 0.5f, Animation.PlayMode.NORMAL, SoundAsset.BOX_BREAK, 0.2f),
     HEART("heart", 0.5f),
     DIAMOND("diamond", 0.5f),
     LIFE_UI_EMPTY("heart_empty"),

@@ -1,5 +1,8 @@
 package core.screen
 
+import asset.MusicAsset
+import asset.TextureAsset
+import asset.TextureAtlasAsset
 import core.MyGame
 import core.V_WIDTH
 import ecs.component.*
@@ -86,7 +89,7 @@ class GameScreen(private val game: MyGame) : KtxScreen {
     }
 
     override fun show() {
-        rainMusic.play()
+        game.audioService.play(MusicAsset.BGM, 0.5f)
     }
 
     override fun resize(width: Int, height: Int) {
@@ -96,9 +99,6 @@ class GameScreen(private val game: MyGame) : KtxScreen {
 
     override fun render(delta: Float) {
         game.engine.update(min(MAX_DELTA_TIME, delta))
-    }
-
-    override fun dispose() {
-        rainMusic.dispose()
+        game.audioService.update()
     }
 }
