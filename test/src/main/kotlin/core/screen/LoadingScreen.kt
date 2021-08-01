@@ -1,5 +1,6 @@
 package core.screen
 
+import asset.SoundAsset
 import asset.TextureAsset
 import asset.TextureAtlasAsset
 import core.MyGame
@@ -22,7 +23,8 @@ class LoadingScreen(private val game: MyGame): KtxScreen {
         // queue asset loading
         val assetRefs = gdxArrayOf(
             TextureAsset.values().map { game.assets.loadAsync(it.descriptor) },
-            TextureAtlasAsset.values().map { game.assets.loadAsync(it.descriptor) }
+            TextureAtlasAsset.values().map { game.assets.loadAsync(it.descriptor) },
+            SoundAsset.values().map { game.assets.loadAsync(it.descriptor) }
         ).flatten()
 
         // once assets are loaded -> change to GameScreen
