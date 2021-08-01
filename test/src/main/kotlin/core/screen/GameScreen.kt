@@ -1,14 +1,13 @@
 package core.screen
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.audio.Music
 import core.MyGame
 import core.V_WIDTH
 import ecs.component.*
-import ecs.system.RenderSystem
+import ecs.system.*
 import ktx.app.KtxScreen
 import ktx.ashley.entity
 import ktx.ashley.with
+import ktx.collections.toGdxArray
 import ktx.log.logger
 import kotlin.math.min
 
@@ -17,26 +16,46 @@ private const val MAX_DELTA_TIME = 1 / 20f
 private const val GOLDEN_RATIO = 1.618f
 
 class GameScreen(private val game: MyGame) : KtxScreen {
-    private var rainMusic: Music
-
-    private val player = game.engine.entity {
-        with<TransformComponent>() {
-            size.set(2f, 2f)
-            setInitialPosition(V_WIDTH.div(2).toFloat() - size.x / 2f, 1f, 1f)
-        }
-        with<ColliderComponent> {
-            modifier = ColliderModifier(0.4f, 0.3f, 0.5f, 1f)
-        }
-        with<MoveComponent>()
-        with<GraphicComponent>()
-        with<PlayerComponent>()
-        with<StateComponent>()
-        with<AnimationComponent>()
-    }
 
     init {
-        rainMusic = Gdx.audio.newMusic(Gdx.files.internal("assets/music/rain.mp3"))
-        rainMusic.isLooping = true
+        // add system into engine
+        game.engine.apply {
+            val animationAtlas = game.assets[TextureAtlasAsset.ANIMATION.descriptor]
+            val platformTexture = game.assets[TextureAsset.PLATFORM.descriptor]
+            val backgroundTextures = TextureAsset.values().filter { it.toString().startsWith("BACKGROUND") }
+                .map { game.assets[it.descriptor] }.toGdxArray()
+
+            addSystem(PlayerInputSystem(game.gameViewport))
+            addSystem(ObstacleSystem(game.gameEventManager))
+            addSystem(PowerUpSystem())
+            addSystem(DamageSystem(game.gameEventManager))
+            addSystem(LifeBarAnimationSystem())
+            addSystem(MoveSystem())
+            addSystem(PlayerAnimationSystem())
+            addSystem(AnimationSystem(animationAtlas, game.audioService))
+            addSystem(
+                RenderSystem(game.gameEventManager, game.batch, game.font, game.shape, game.gameViewport, game.uiViewport,
+                    backgroundTextures, platformTexture)
+            )
+            addSystem(RemoveSystem())
+            addSystem(DebugSystem())
+        }
+
+        // create player entity
+        game.engine.entity {
+            with<TransformComponent>() {
+                size.set(2f, 2f)
+                setInitialPosition(V_WIDTH.div(2).toFloat() - size.x / 2f, 1f, 1f)
+            }
+            with<ColliderComponent> {
+                modifier = ColliderModifier(0.4f, 0.3f, 0.5f, 1f)
+            }
+            with<MoveComponent>()
+            with<GraphicComponent>()
+            with<PlayerComponent>()
+            with<StateComponent>()
+            with<AnimationComponent>()
+        }
 
         // create life bar
         game.engine.entity {
