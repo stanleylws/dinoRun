@@ -6,6 +6,7 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import core.IN_DEBUGGING
+import ecs.component.MAX_SHIELD
 import ecs.component.MoveComponent
 import ecs.component.PlayerComponent
 import ecs.component.TransformComponent
@@ -27,5 +28,9 @@ class DebugSystem: IteratingSystem(allOf(PlayerComponent::class).get()) {
         requireNotNull(move) { "Entity |entity| must have a MoveComponent. entity = $entity" }
 
         Gdx.graphics.setTitle("fps:${(1 / delta).toInt()} life: ${player.life} speed:${move.speed} acc: ${move.acceletration}")
+
+        if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_1)) {
+            player.shield = MAX_SHIELD
+        }
     }
 }

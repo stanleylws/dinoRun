@@ -7,6 +7,7 @@ import com.badlogic.ashley.systems.IteratingSystem
 import ecs.component.*
 import ktx.ashley.allOf
 import ktx.ashley.get
+import kotlin.math.max
 
 class PlayerAnimationSystem: IteratingSystem(allOf(PlayerComponent::class, StateComponent::class, AnimationComponent::class).get()),
     EntityListener {
@@ -42,5 +43,7 @@ class PlayerAnimationSystem: IteratingSystem(allOf(PlayerComponent::class, State
             State.FAINT -> AnimationType.DINO_HURT
             else -> AnimationType.DINO_IDLE
         }
+
+        player.shield = max(0f, player.shield - deltaTime)
     }
 }

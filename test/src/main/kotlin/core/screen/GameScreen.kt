@@ -1,6 +1,7 @@
 package core.screen
 
 import asset.MusicAsset
+import asset.ShaderProgramAsset
 import asset.TextureAsset
 import asset.TextureAtlasAsset
 import core.MyGame
@@ -41,7 +42,8 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
             addSystem(PlayerAnimationSystem())
             addSystem(AnimationSystem(animationAtlas, game.audioService))
             addSystem(
-                RenderSystem(game.gameEventManager, game.batch, game.font, game.shape, game.gameViewport, game.uiViewport,
+                RenderSystem(game.gameEventManager, game.batch, game.font, game.shape,
+                    game.assets[ShaderProgramAsset.OUTLINE.descriptor], game.gameViewport, game.uiViewport,
                     backgroundTextures, platformTexture)
             )
             addSystem(RemoveSystem())

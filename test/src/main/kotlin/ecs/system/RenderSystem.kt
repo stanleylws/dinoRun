@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.Sprite
+import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.viewport.Viewport
@@ -18,12 +19,15 @@ import event.GameEvent
 import event.GameEventListener
 import event.GameEventManager
 import ktx.ashley.allOf
+import ktx.ashley.exclude
 import ktx.ashley.get
 import ktx.collections.GdxArray
 import ktx.graphics.use
 import ktx.log.error
 import ktx.log.info
 import ktx.log.logger
+import kotlin.math.PI
+import kotlin.math.sin
 
 private val LOG = logger<RenderSystem>()
 
@@ -32,6 +36,7 @@ class RenderSystem(
     private val batch: Batch,
     private val font: BitmapFont,
     private val shapeRenderer: ShapeRenderer,
+    private val outlineShader: ShaderProgram,
     private val gameViewport: Viewport,
     private val uiViewport: Viewport,
     backgroundTextures: GdxArray<Texture>,
@@ -47,6 +52,13 @@ class RenderSystem(
         Sprite(texture)
     }
     private val backgroundScrollSpeed = Vector2()
+
+    private val textureSizeLoc = outlineShader.getUniformLocation("u_textureSize")
+    private val outlineColorLoc = outlineShader.getUniformLocation("u_outlineColor")
+    private val outlineColor = Color(0f, 113f / 225f, 214f / 255f, 1f)
+    private val playerEntities by lazy {
+        engine.getEntitiesFor(allOf(PlayerComponent::class).exclude(RemoveComponent::class).get())
+    }
 
     override fun addedToEngine(engine: Engine?) {
         super.addedToEngine(engine)
@@ -82,11 +94,43 @@ class RenderSystem(
         gameViewport.apply()
         super.update(deltaTime)
 
+        // render outline of entities
+        renderEntityOutlines()
+
         // render platform
         uiViewport.apply()
         batch.use(uiViewport.camera.combined) {
             platform.draw(it)
         }
+    }
+
+    private fun renderEntityOutlines() {
+        batch.use(gameViewport.camera.combined) {
+            it.shader = outlineShader
+            playerEntities.forEach { entity ->
+                renderPlayerOutline(entity, it)
+            }
+            it.shader = null
+        }
+    }
+
+    private fun renderPlayerOutline(entity: Entity, batch: Batch) {
+        val player = entity[PlayerComponent.mapper]
+        requireNotNull(player) { "Entity |entity| must have a PlayerComponent. entity = $entity"}
+
+        outlineColor.a = when(player.shield) {
+            0f -> 0f
+            in 0f..2f -> sin(4f *  player.shield * PI.toFloat()) // blinking outline when shield is disappearing
+            else -> 1f
+        }
+        outlineShader.setUniformf(outlineColorLoc, outlineColor)
+        entity[GraphicComponent.mapper]?.let { graphic ->
+            graphic.sprite.run {
+                outlineShader.setUniformf(textureSizeLoc, texture.width.toFloat(), texture.height.toFloat())
+                draw(batch)
+            }
+        }
+
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {

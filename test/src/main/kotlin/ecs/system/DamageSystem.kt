@@ -87,15 +87,7 @@ class DamageSystem(
         val state = playerEntity[StateComponent.mapper]
         requireNotNull(state) { "Entity |entity| must have a StateComponent. entity = $playerEntity" }
 
-        if (immuneTime > 0f) return
-
-        if (player.shield > 0f) {
-            val blockAmount = player.shield
-            player.shield = max(0f, player.shield - damage)
-            val finalDamage = damage - blockAmount
-
-            if (finalDamage <= 0f) return
-        }
+        if (immuneTime > 0f || player.shield > 0) return
 
         player.life -= damage
         state.currentState = State.HURT
