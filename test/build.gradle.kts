@@ -24,6 +24,7 @@ dependencies {
     implementation("io.github.libktx:ktx-graphics:${project.property("ktxVersion")}")
     implementation("io.github.libktx:ktx-ashley:${project.property("ktxVersion")}")
     implementation("io.github.libktx:ktx-collections:${project.property("ktxVersion")}")
+    implementation("io.github.libktx:ktx-preferences:${project.property("ktxVersion")}")
     testImplementation(kotlin("test"))
 }
 

@@ -75,13 +75,19 @@ class MoveSystem:
 
     private fun movePlayer(transform: TransformComponent, move: MoveComponent,
                            player: PlayerComponent, state:StateComponent, deltaTime: Float) {
+        val worldScrollSpeed = DEFAULT_SCROLL_SPEED * SCROLL_SPEED_TO_WORLD_RATIO
         move.speed.x = when(state.currentState) {
             State.WALK -> 0f
-            State.RUN -> player.moveSpeed
-            else -> -1 * DEFAULT_SCROLL_SPEED * SCROLL_SPEED_TO_WORLD_RATIO
+            State.RUN -> worldScrollSpeed
+            else -> -1 * worldScrollSpeed
         }
         move.acceletration.y = when(state.currentState) {
             State.FAINT -> -10f
+            else -> 0f
+        }
+        player.distance += when(state.currentState) {
+            State.WALK -> worldScrollSpeed * deltaTime
+            State.RUN -> worldScrollSpeed * 2 * deltaTime
             else -> 0f
         }
         moveEntity(transform, move, deltaTime)

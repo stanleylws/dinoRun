@@ -13,6 +13,7 @@ class PlayerComponent: Component, Pool.Poolable {
     var shield = 0f
     var maxShield = MAX_SHIELD
     var moveSpeed = 2f
+    var distance = 0f
     var diamondCollected = 0
 
     override fun reset() {
@@ -21,6 +22,7 @@ class PlayerComponent: Component, Pool.Poolable {
         shield = 0f
         maxShield = MAX_SHIELD
         moveSpeed = 1f
+        distance = 0f
         diamondCollected = 0
     }
 

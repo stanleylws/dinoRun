@@ -1,5 +1,6 @@
 package core
 
+import asset.MusicAsset
 import asset.TextureAsset
 import asset.TextureAtlasAsset
 import audio.DefaultAudioService
@@ -10,6 +11,7 @@ import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
@@ -22,6 +24,9 @@ import ktx.assets.async.AssetStorage
 import ktx.async.KtxAsync
 import ktx.collections.flatten
 import ktx.collections.gdxArrayOf
+import ktx.log.debug
+import ktx.log.info
+import ktx.log.logger
 
 const val V_WIDTH = 16
 const val V_HEIGHT = 9
@@ -34,6 +39,8 @@ const val SCROLL_SPEED_TO_WORLD_RATIO =  1f / 0.0625f
 const val DEFAULT_SCROLL_SPEED = 0.05f
 var CURRENT_SCROLL_SPEED = DEFAULT_SCROLL_SPEED
 
+private val LOG = logger<MyGame>()
+
 class MyGame: KtxGame<KtxScreen>() {
     lateinit var batch: SpriteBatch
     lateinit var font: BitmapFont
@@ -43,11 +50,13 @@ class MyGame: KtxGame<KtxScreen>() {
         KtxAsync.initiate()
         AssetStorage()
     }
+
+    val gameEventManager = GameEventManager()
+    val engine: Engine = PooledEngine()
     val audioService by lazy { DefaultAudioService(assets) }
     val gameViewport = FitViewport(V_WIDTH.toFloat(), V_HEIGHT.toFloat())
     val uiViewport = FitViewport(V_WIDTH_PIXELS.toFloat(), V_HEIGHT_PIXELS.toFloat())
-    val gameEventManager = GameEventManager()
-    val engine: Engine = PooledEngine()
+    val preferences: Preferences by lazy { Gdx.app.getPreferences("dino-run") }
 
     override fun create() {
         addScreen(LoadingScreen(this))
@@ -60,6 +69,7 @@ class MyGame: KtxGame<KtxScreen>() {
 
     override fun render() {
         super.render()
+        LOG.debug { "RenderCall: ${batch.renderCalls}" }
     }
 
     override fun dispose() {

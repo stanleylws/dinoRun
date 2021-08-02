@@ -32,11 +32,11 @@ enum class SoundAsset(
     directory: String = "assets/sound",
     val descriptor: AssetDescriptor<Sound> = AssetDescriptor("$directory/$fileName", Sound::class.java)
 ) {
-    BOX_HIT("box_hit.wav"),
-    BOX_BREAK("box_break.wav"),
-    PLAYER_DAMAGED("player_damaged.wav"),
-    PLAYER_WALK("player_walk.wav"),
-    PLAYER_RUN("player_run.wav")
+    BOX_HIT("box-hit.wav"),
+    BOX_BREAK("box-break.wav"),
+    PLAYER_DAMAGED("player-damaged.wav"),
+    PLAYER_WALK("player-walk.wav"),
+    PLAYER_RUN("player-run.wav")
 }
 
 enum class MusicAsset(
@@ -45,5 +45,5 @@ enum class MusicAsset(
     val descriptor: AssetDescriptor<Music> = AssetDescriptor("$directory/$fileName", Music::class.java)
 ) {
     RAIN("rain.mp3"),
-    BGM("bgm_energy.mp3")
+    BGM("bgm-energy.mp3")
 }

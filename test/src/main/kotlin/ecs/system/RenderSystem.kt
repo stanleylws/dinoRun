@@ -22,6 +22,7 @@ import ktx.ashley.get
 import ktx.collections.GdxArray
 import ktx.graphics.use
 import ktx.log.error
+import ktx.log.info
 import ktx.log.logger
 
 private val LOG = logger<RenderSystem>()
@@ -128,6 +129,7 @@ class RenderSystem(
 
     override fun onEvent(event: GameEvent) {
         val deathEvent = event as GameEvent.PlayerDeath
+        LOG.info { "Distance travelled: ${deathEvent.distance}" }
         CURRENT_SCROLL_SPEED = 0f
     }
 }

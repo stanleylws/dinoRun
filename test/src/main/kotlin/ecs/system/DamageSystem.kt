@@ -105,7 +105,7 @@ class DamageSystem(
             playerEntity.addComponent<RemoveComponent>(engine) {
                 delay = DEATH_EXPLOSION_DURATION
             }
-            gameEventManager.dispatchEvent(GameEvent.PlayerDeath.apply { distance = 0 })
+            gameEventManager.dispatchEvent(GameEvent.PlayerDeath.apply { distance = player.distance.toInt() })
             state.currentState = State.FAINT
             playerEntity[MoveComponent.mapper]?.let { move -> move.speed.y = 5f }
         }

@@ -7,18 +7,22 @@ import core.MyGame
 import core.V_WIDTH
 import ecs.component.*
 import ecs.system.*
+import event.GameEvent
+import event.GameEventListener
 import ktx.app.KtxScreen
 import ktx.ashley.entity
 import ktx.ashley.with
 import ktx.collections.toGdxArray
 import ktx.log.logger
+import ktx.preferences.flush
+import ktx.preferences.set
 import kotlin.math.min
 
 private val LOG = logger<RenderSystem>()
 private const val MAX_DELTA_TIME = 1 / 20f
 private const val GOLDEN_RATIO = 1.618f
 
-class GameScreen(private val game: MyGame) : KtxScreen {
+class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
 
     init {
         // add system into engine
@@ -89,7 +93,13 @@ class GameScreen(private val game: MyGame) : KtxScreen {
     }
 
     override fun show() {
+        game.gameEventManager.addListener(GameEvent.PlayerDeath::class, this)
         game.audioService.play(MusicAsset.BGM, 0.5f)
+    }
+
+    override fun hide() {
+        super.hide()
+        game.gameEventManager.removeListener(GameEvent.PlayerDeath::class, this)
     }
 
     override fun resize(width: Int, height: Int) {
@@ -100,5 +110,11 @@ class GameScreen(private val game: MyGame) : KtxScreen {
     override fun render(delta: Float) {
         game.engine.update(min(MAX_DELTA_TIME, delta))
         game.audioService.update()
+    }
+
+    override fun onEvent(event: GameEvent) {
+        game.preferences.flush {
+            this["highscore"] = (event as GameEvent.PlayerDeath).distance
+        }
     }
 }
