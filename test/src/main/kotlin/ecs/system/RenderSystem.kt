@@ -55,9 +55,12 @@ class RenderSystem(
 
     private val textureSizeLoc = outlineShader.getUniformLocation("u_textureSize")
     private val outlineColorLoc = outlineShader.getUniformLocation("u_outlineColor")
-    private val outlineColor = Color(0f, 113f / 225f, 214f / 255f, 1f)
+    private val outlineColor = Color(3f / 255f, 232f / 255f, 252f / 255f, 1f)
     private val playerEntities by lazy {
         engine.getEntitiesFor(allOf(PlayerComponent::class).exclude(RemoveComponent::class).get())
+    }
+    private val lifeBarEntities by lazy {
+        engine.getEntitiesFor(allOf(LifeBarComponent::class).exclude(RemoveComponent::class).get())
     }
 
     override fun addedToEngine(engine: Engine?) {
@@ -108,21 +111,22 @@ class RenderSystem(
         batch.use(gameViewport.camera.combined) {
             it.shader = outlineShader
             playerEntities.forEach { entity ->
-                renderPlayerOutline(entity, it)
+                entity[PlayerComponent.mapper]?.let { player ->
+                    outlineColor.a = when(player.shield) {
+                        0f -> 0f
+                        in 0f..2f -> sin(5f *  player.shield * PI.toFloat()) // blinking outline when shield is disappearing
+                        else -> 1f
+                    }
+                }
+                renderOutline(entity, it)
             }
+            lifeBarEntities.forEach { entity -> renderOutline(entity, batch) }
             it.shader = null
         }
+
     }
 
-    private fun renderPlayerOutline(entity: Entity, batch: Batch) {
-        val player = entity[PlayerComponent.mapper]
-        requireNotNull(player) { "Entity |entity| must have a PlayerComponent. entity = $entity"}
-
-        outlineColor.a = when(player.shield) {
-            0f -> 0f
-            in 0f..2f -> sin(4f *  player.shield * PI.toFloat()) // blinking outline when shield is disappearing
-            else -> 1f
-        }
+    private fun renderOutline(entity: Entity, batch: Batch) {
         outlineShader.setUniformf(outlineColorLoc, outlineColor)
         entity[GraphicComponent.mapper]?.let { graphic ->
             graphic.sprite.run {
