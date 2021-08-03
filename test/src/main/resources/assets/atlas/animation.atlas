@@ -66,13 +66,6 @@ diamond
   size: 18, 14
   orig: 18, 14
   offset: 0, 0
-  index: 1
-diamond
-  rotate: false
-  xy: 1431, 817
-  size: 18, 14
-  orig: 18, 14
-  offset: 0, 0
   index: 0
 diamond
   rotate: false
@@ -88,6 +81,13 @@ diamond
   orig: 18, 14
   offset: 0, 0
   index: 4
+diamond
+  rotate: false
+  xy: 1431, 817
+  size: 18, 14
+  orig: 18, 14
+  offset: 0, 0
+  index: 1
 diamond
   rotate: false
   xy: 1457, 843
@@ -773,14 +773,14 @@ heart
   size: 18, 14
   orig: 18, 14
   offset: 0, 0
-  index: 3
+  index: 6
 heart
   rotate: false
   xy: 1525, 879
   size: 18, 14
   orig: 18, 14
   offset: 0, 0
-  index: 6
+  index: 3
 heart
   rotate: false
   xy: 95, 63
@@ -808,14 +808,14 @@ heart_1
   size: 66, 34
   orig: 66, 34
   offset: 0, 0
-  index: 3
+  index: 1
 heart_1
   rotate: false
   xy: 1171, 599
   size: 66, 34
   orig: 66, 34
   offset: 0, 0
-  index: 1
+  index: 3
 heart_1
   rotate: false
   xy: 1171, 599
@@ -857,7 +857,7 @@ heart_2
   size: 66, 34
   orig: 66, 34
   offset: 0, 0
-  index: 3
+  index: 4
 heart_2
   rotate: false
   xy: 781, 209
@@ -878,7 +878,7 @@ heart_2
   size: 66, 34
   orig: 66, 34
   offset: 0, 0
-  index: 4
+  index: 3
 heart_2
   rotate: false
   xy: 1041, 469
@@ -913,13 +913,6 @@ heart_3
   size: 66, 34
   orig: 66, 34
   offset: 0, 0
-  index: 3
-heart_3
-  rotate: false
-  xy: 1, 79
-  size: 66, 34
-  orig: 66, 34
-  offset: 0, 0
   index: 2
 heart_3
   rotate: false
@@ -927,7 +920,7 @@ heart_3
   size: 66, 34
   orig: 66, 34
   offset: 0, 0
-  index: 4
+  index: 3
 heart_3
   rotate: false
   xy: 1, 79
@@ -935,6 +928,13 @@ heart_3
   orig: 66, 34
   offset: 0, 0
   index: 0
+heart_3
+  rotate: false
+  xy: 1, 79
+  size: 66, 34
+  orig: 66, 34
+  offset: 0, 0
+  index: 4
 heart_3
   rotate: false
   xy: 911, 339
