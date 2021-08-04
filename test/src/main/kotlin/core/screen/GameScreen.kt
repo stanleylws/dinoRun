@@ -1,9 +1,6 @@
 package core.screen
 
-import asset.MusicAsset
-import asset.ShaderProgramAsset
-import asset.TextureAsset
-import asset.TextureAtlasAsset
+import asset.*
 import core.MyGame
 import core.V_WIDTH
 import ecs.component.*
@@ -17,6 +14,8 @@ import ktx.collections.toGdxArray
 import ktx.log.logger
 import ktx.preferences.flush
 import ktx.preferences.set
+import ktx.scene2d.actors
+import ktx.scene2d.label
 import kotlin.math.min
 
 private val LOG = logger<RenderSystem>()
@@ -26,6 +25,7 @@ private const val GOLDEN_RATIO = 1.618f
 class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
 
     init {
+        val font = game.assets[BitmapFontAsset.FONT_DEFAULT.descriptor]
         // add system into engine
         game.engine.apply {
             val animationAtlas = game.assets[TextureAtlasAsset.ANIMATION.descriptor]
@@ -42,7 +42,7 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
             addSystem(PlayerAnimationSystem())
             addSystem(AnimationSystem(animationAtlas, game.audioService))
             addSystem(
-                RenderSystem(game.gameEventManager, game.batch, game.font, game.shape,
+                RenderSystem(game.gameEventManager, game.batch, font, game.shape,
                     game.assets[ShaderProgramAsset.OUTLINE.descriptor], game.gameViewport, game.uiViewport,
                     backgroundTextures, platformTexture)
             )
@@ -70,11 +70,21 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
         game.engine.entity {
             with<TransformComponent> {
                 size.set(4f, 2f)
-                setInitialPosition(0.5f, 6.8f,3f)
+                setInitialPosition(0.2f, 6.8f,3f)
             }
             with<LifeBarComponent>()
             with<GraphicComponent>()
             with<AnimationComponent> { type = AnimationType.LIFE_UI_EMPTY }
+        }
+
+        // create diamond count
+        game.engine.entity {
+            with<TransformComponent> {
+                size.set(1f, 0.75f)
+                setInitialPosition(1f, 6.6f,3f)
+            }
+            with<GraphicComponent>()
+            with<AnimationComponent> { type = AnimationType.DIAMOND_COUNT }
         }
 
         repeat(6){ index ->
@@ -97,6 +107,7 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
     override fun show() {
         game.gameEventManager.addListener(GameEvent.PlayerDeath::class, this)
         game.audioService.play(MusicAsset.BGM, 0.5f)
+        game.stage.actors {}
     }
 
     override fun hide() {
@@ -112,6 +123,11 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
     override fun render(delta: Float) {
         game.engine.update(min(MAX_DELTA_TIME, delta))
         game.audioService.update()
+        game.stage.run {
+            viewport.apply()
+            act()
+            draw()
+        }
     }
 
     override fun onEvent(event: GameEvent) {

@@ -31,6 +31,8 @@ class DebugSystem: IteratingSystem(allOf(PlayerComponent::class).get()) {
 
         if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_1)) {
             player.shield = MAX_SHIELD
+        } else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_2)) {
+            player.diamondCollected++
         }
     }
 }

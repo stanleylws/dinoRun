@@ -25,6 +25,9 @@ dependencies {
     implementation("io.github.libktx:ktx-ashley:${project.property("ktxVersion")}")
     implementation("io.github.libktx:ktx-collections:${project.property("ktxVersion")}")
     implementation("io.github.libktx:ktx-preferences:${project.property("ktxVersion")}")
+    implementation("io.github.libktx:ktx-style:${project.property("ktxVersion")}")
+    implementation("io.github.libktx:ktx-scene2d:${project.property("ktxVersion")}")
+    implementation("io.github.libktx:ktx-actors:${project.property("ktxVersion")}")
     testImplementation(kotlin("test"))
 }
 

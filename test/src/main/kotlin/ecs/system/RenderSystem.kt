@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.viewport.Viewport
 import core.CURRENT_SCROLL_SPEED
 import core.IN_DEBUGGING
+import core.WORLD_TO_PIXEL_RATIO
 import ecs.component.*
 import event.GameEvent
 import event.GameEventListener
@@ -52,6 +53,7 @@ class RenderSystem(
         Sprite(texture)
     }
     private val backgroundScrollSpeed = Vector2()
+    private var diamondCollected: Int = 0
 
     private val textureSizeLoc = outlineShader.getUniformLocation("u_textureSize")
     private val outlineColorLoc = outlineShader.getUniformLocation("u_outlineColor")
@@ -97,13 +99,22 @@ class RenderSystem(
         gameViewport.apply()
         super.update(deltaTime)
 
-        // render outline of entities
+        // render ui
+        renderScores()
         renderEntityOutlines()
 
         // render platform
         uiViewport.apply()
         batch.use(uiViewport.camera.combined) {
             platform.draw(it)
+        }
+    }
+
+    private fun renderScores() {
+        batch.use(uiViewport.camera.combined) {
+            font.color = Color(248f / 255f, 244f / 255f, 252f / 255f, 0.95f)
+            font.data.setScale(0.4f)
+            font.draw(batch, diamondCollected.toString(), 2.1f * WORLD_TO_PIXEL_RATIO, 7.15f * WORLD_TO_PIXEL_RATIO)
         }
     }
 
@@ -142,6 +153,10 @@ class RenderSystem(
         require(transform != null) { "Entity |entity| must have a TransformComponent. entity = $entity"}
         val graphic = entity[GraphicComponent.mapper]
         requireNotNull(graphic) { "Entity |entity| must have a GraphicComponent. entity = $entity"}
+
+        entity[PlayerComponent.mapper]?.let {
+            diamondCollected = it.diamondCollected
+        }
 
         if (graphic.sprite.texture == null) {
             LOG.error { "Entity has no texture for rendering. entity=$entity" }

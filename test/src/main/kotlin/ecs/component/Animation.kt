@@ -34,7 +34,8 @@ enum class AnimationType(
     LIFE_UI_EMPTY("heart_empty"),
     LIFE_UI_ONE_HEART("heart_1", 0.5f),
     LIFE_UI_TWO_HEART("heart_2", 0.5f),
-    LIFE_UI_THREE_HEART("heart_3", 0.5f)
+    LIFE_UI_THREE_HEART("heart_3", 0.5f),
+    DIAMOND_COUNT("diamond_count", 0.5f)
 }
 
 class Animation2D(
