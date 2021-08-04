@@ -7,15 +7,16 @@ import ecs.component.*
 import ecs.system.*
 import event.GameEvent
 import event.GameEventListener
+import ktx.actors.plusAssign
 import ktx.app.KtxScreen
 import ktx.ashley.entity
+import ktx.ashley.get
 import ktx.ashley.with
 import ktx.collections.toGdxArray
 import ktx.log.logger
 import ktx.preferences.flush
 import ktx.preferences.set
-import ktx.scene2d.actors
-import ktx.scene2d.label
+import ui.GameUI
 import kotlin.math.min
 
 private val LOG = logger<RenderSystem>()
@@ -23,7 +24,7 @@ private const val MAX_DELTA_TIME = 1 / 20f
 private const val GOLDEN_RATIO = 1.618f
 
 class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
-
+    private val ui = GameUI()
     init {
         val font = game.assets[BitmapFontAsset.FONT_DEFAULT.descriptor]
         // add system into engine
@@ -35,9 +36,8 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
 
             addSystem(PlayerInputSystem(game.gameViewport))
             addSystem(ObstacleSystem(game.gameEventManager))
-            addSystem(PowerUpSystem())
+            addSystem(CollectSystem(game.gameEventManager))
             addSystem(DamageSystem(game.gameEventManager))
-            addSystem(LifeBarAnimationSystem())
             addSystem(MoveSystem())
             addSystem(PlayerAnimationSystem())
             addSystem(AnimationSystem(animationAtlas, game.audioService))
@@ -47,7 +47,7 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
                     backgroundTextures, platformTexture)
             )
             addSystem(RemoveSystem())
-            addSystem(DebugSystem())
+            addSystem(DebugSystem(game.gameEventManager))
         }
 
         // create player entity
@@ -64,27 +64,6 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
             with<PlayerComponent>()
             with<StateComponent>()
             with<AnimationComponent>()
-        }
-
-        // create life bar
-        game.engine.entity {
-            with<TransformComponent> {
-                size.set(4f, 2f)
-                setInitialPosition(0.2f, 6.8f,3f)
-            }
-            with<LifeBarComponent>()
-            with<GraphicComponent>()
-            with<AnimationComponent> { type = AnimationType.LIFE_UI_EMPTY }
-        }
-
-        // create diamond count
-        game.engine.entity {
-            with<TransformComponent> {
-                size.set(1f, 0.75f)
-                setInitialPosition(1f, 6.6f,3f)
-            }
-            with<GraphicComponent>()
-            with<AnimationComponent> { type = AnimationType.DIAMOND_COUNT }
         }
 
         repeat(6){ index ->
@@ -105,14 +84,26 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
     }
 
     override fun show() {
-        game.gameEventManager.addListener(GameEvent.PlayerDeath::class, this)
+        game.gameEventManager.run {
+            addListener(GameEvent.Collect::class, this@GameScreen)
+            addListener(GameEvent.PlayerDamaged::class, this@GameScreen)
+            addListener(GameEvent.PlayerDeath::class, this@GameScreen)
+        }
         game.audioService.play(MusicAsset.BGM, 0.5f)
-        game.stage.actors {}
+        ui.run {
+            updateLife(MAX_LIFE)
+        }
+        game.stage += ui
     }
 
     override fun hide() {
         super.hide()
-        game.gameEventManager.removeListener(GameEvent.PlayerDeath::class, this)
+        game.gameEventManager.run {
+            removeListener(GameEvent.Collect::class, this@GameScreen)
+            removeListener(GameEvent.PlayerDamaged::class, this@GameScreen)
+            removeListener(GameEvent.PlayerDeath::class, this@GameScreen)
+
+        }
     }
 
     override fun resize(width: Int, height: Int) {
@@ -131,8 +122,28 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
     }
 
     override fun onEvent(event: GameEvent) {
-        game.preferences.flush {
-            this["highscore"] = (event as GameEvent.PlayerDeath).distance
+        when (event) {
+            is GameEvent.Collect -> PlayerOnCollect(event)
+            is GameEvent.PlayerDamaged -> {
+                event.player[PlayerComponent.mapper]?.let {
+                    ui.updateLife(it.life)
+                }
+            }
+            is GameEvent.PlayerDeath -> {
+                game.preferences.flush {
+                    this["highscore"] = event.distance
+                }
+            }
+        }
+    }
+
+    private fun PlayerOnCollect(event: GameEvent.Collect) {
+        val player = event.player[PlayerComponent.mapper]
+        requireNotNull(player) { "Entity |entity| must have a PlayerComponent. entity = ${event.player}" }
+
+        when (event.type) {
+            CollectableType.LIFE -> ui.updateLife(player.life)
+            CollectableType.DIAMOND -> ui.updateDiamondNumber(player.diamondCollected)
         }
     }
 }

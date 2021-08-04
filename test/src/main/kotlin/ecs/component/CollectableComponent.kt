@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Pool
 import ktx.ashley.mapperFor
 
 enum class CollectableType(val animationType: AnimationType) {
+    NONE(AnimationType.NONE),
     LIFE(AnimationType.HEART),
     DIAMOND(AnimationType.DIAMOND)
 }

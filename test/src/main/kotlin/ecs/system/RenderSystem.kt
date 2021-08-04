@@ -61,9 +61,6 @@ class RenderSystem(
     private val playerEntities by lazy {
         engine.getEntitiesFor(allOf(PlayerComponent::class).exclude(RemoveComponent::class).get())
     }
-    private val lifeBarEntities by lazy {
-        engine.getEntitiesFor(allOf(LifeBarComponent::class).exclude(RemoveComponent::class).get())
-    }
 
     override fun addedToEngine(engine: Engine?) {
         super.addedToEngine(engine)
@@ -99,8 +96,7 @@ class RenderSystem(
         gameViewport.apply()
         super.update(deltaTime)
 
-        // render ui
-        renderScores()
+        // render outlines
         renderEntityOutlines()
 
         // render platform
@@ -131,7 +127,6 @@ class RenderSystem(
                 }
                 renderOutline(entity, it)
             }
-            lifeBarEntities.forEach { entity -> renderOutline(entity, batch) }
             it.shader = null
         }
 

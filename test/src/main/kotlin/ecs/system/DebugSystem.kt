@@ -6,15 +6,14 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import core.IN_DEBUGGING
-import ecs.component.MAX_SHIELD
-import ecs.component.MoveComponent
-import ecs.component.PlayerComponent
-import ecs.component.TransformComponent
+import ecs.component.*
+import event.GameEvent
+import event.GameEventManager
 import ktx.ashley.allOf
 import ktx.ashley.get
 import ktx.ashley.getSystem
 
-class DebugSystem: IteratingSystem(allOf(PlayerComponent::class).get()) {
+class DebugSystem(private val gameEventManager: GameEventManager): IteratingSystem(allOf(PlayerComponent::class).get()) {
     init {
         setProcessing(IN_DEBUGGING)
     }
@@ -33,6 +32,10 @@ class DebugSystem: IteratingSystem(allOf(PlayerComponent::class).get()) {
             player.shield = MAX_SHIELD
         } else if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_2)) {
             player.diamondCollected++
+            gameEventManager.dispatchEvent(GameEvent.Collect.apply {
+                this.player = entity
+                type = CollectableType.DIAMOND
+            })
         }
     }
 }

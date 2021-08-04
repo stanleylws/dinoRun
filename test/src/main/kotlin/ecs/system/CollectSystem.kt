@@ -5,6 +5,8 @@ import com.badlogic.ashley.systems.IteratingSystem
 import core.CURRENT_SCROLL_SPEED
 import core.SCROLL_SPEED_TO_WORLD_RATIO
 import ecs.component.*
+import event.GameEvent
+import event.GameEventManager
 import ktx.ashley.addComponent
 import ktx.ashley.allOf
 import ktx.ashley.exclude
@@ -15,7 +17,7 @@ const val POWER_UP_HEIGHT = 1.5f
 const val GRAVITATIONAL_ACCELERATION = -10f
 private const val LIFE_GAIN = 1
 
-class PowerUpSystem
+class CollectSystem(private val gameEventManager: GameEventManager)
     : IteratingSystem(allOf(CollectableComponent::class).exclude(RemoveComponent::class).get()) {
 
     private val playerEntities by lazy {
@@ -58,6 +60,10 @@ class PowerUpSystem
                     CollectableType.LIFE -> player.life = min(player.maxLife, player.life + LIFE_GAIN)
                     CollectableType.DIAMOND -> player.diamondCollected++
                 }
+                gameEventManager.dispatchEvent(GameEvent.Collect.apply {
+                    this.player = playerEntity
+                    this.type = collectable.type
+                })
             }
         }
     }

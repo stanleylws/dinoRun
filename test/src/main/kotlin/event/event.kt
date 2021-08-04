@@ -2,6 +2,7 @@ package event
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.ObjectMap
+import ecs.component.CollectableType
 import ktx.collections.GdxSet
 import java.util.*
 import kotlin.reflect.KClass
@@ -21,6 +22,15 @@ sealed class GameEvent {
 
         override fun toString(): String {
             return "PlayerDeath(distance=$distance)"
+        }
+    }
+
+    object Collect: GameEvent() {
+        lateinit var player: Entity
+        var type = CollectableType.NONE
+
+        override fun toString(): String {
+            return "Collect(type=$type)"
         }
     }
 }
