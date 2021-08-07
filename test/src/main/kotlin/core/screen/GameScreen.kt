@@ -7,10 +7,12 @@ import ecs.component.*
 import ecs.system.*
 import event.GameEvent
 import event.GameEventListener
+import ktx.actors.onChangeEvent
 import ktx.actors.plusAssign
 import ktx.app.KtxScreen
 import ktx.ashley.entity
 import ktx.ashley.get
+import ktx.ashley.getSystem
 import ktx.ashley.with
 import ktx.collections.toGdxArray
 import ktx.log.logger
@@ -24,7 +26,24 @@ private const val MAX_DELTA_TIME = 1 / 20f
 private const val GOLDEN_RATIO = 1.618f
 
 class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
-    private val ui = GameUI()
+    private val renderSystem by lazy { game.engine.getSystem<RenderSystem>()  }
+
+    private val ui = GameUI().apply {
+        soundOnOffButton.onChangeEvent {
+            when(this.isChecked) {
+                true -> game.audioService.pause()
+                else -> game.audioService.resume()
+            }
+        }
+
+        pauseResumeButton.onChangeEvent {
+            when(this.isChecked) {
+                true -> game.audioService.pause()
+                else -> if (soundOnOffButton.isChecked) Unit else game.audioService.resume()
+            }
+        }
+
+    }
     init {
         val font = game.assets[BitmapFontAsset.FONT_DEFAULT.descriptor]
         // add system into engine
@@ -92,6 +111,12 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
         game.audioService.play(MusicAsset.BGM, 0.5f)
         ui.run {
             updateLife(MAX_LIFE)
+            soundOnOffButton.run {
+                this.isChecked = false
+            }
+                pauseResumeButton.run {
+                this.isChecked = false
+            }
         }
         game.stage += ui
     }
@@ -112,8 +137,14 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
     }
 
     override fun render(delta: Float) {
-        game.engine.update(min(MAX_DELTA_TIME, delta))
-        game.audioService.update()
+        val deltaTime = min(delta, MAX_DELTA_TIME)
+        if (ui.pauseResumeButton.isChecked) {
+            renderSystem.update(0f)
+        } else {
+            game.engine.update(deltaTime)
+            game.audioService.update()
+        }
+
         game.stage.run {
             viewport.apply()
             act()

@@ -8,6 +8,8 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.viewport.Viewport
 import core.CURRENT_SCROLL_SPEED
 import core.DEFAULT_SCROLL_SPEED
+import core.V_HEIGHT
+import core.V_HEIGHT_PIXELS
 import ecs.component.*
 import ktx.ashley.allOf
 import ktx.ashley.exclude
@@ -18,6 +20,7 @@ import kotlin.math.max
 private val LOG = logger<RenderSystem>()
 
 private const val TOUCH_INTERVAL = 0.25f
+private const val GAME_HUD_HEIGHT = 2f
 
 class PlayerInputSystem(
     private val gameViewport: Viewport
@@ -25,6 +28,7 @@ class PlayerInputSystem(
     .exclude(RemoveComponent::class).get()) {
     private var touchInterval = 0f
     private var touchCount = 0
+    private val tmpVec = Vector2()
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         val state = entity[StateComponent.mapper]
@@ -33,10 +37,11 @@ class PlayerInputSystem(
         requireNotNull(transform) { "Entity |entity| must have a TransformComponent. entity = $entity" }
 
         touchInterval = max(0f, touchInterval - deltaTime)
+        tmpVec.y = Gdx.input.y.toFloat()
         if (touchInterval <= 0f && touchCount > 0 && !Gdx.input.isTouched(0)) touchCount = 0
-        if (Gdx.input.justTouched()) {
+        if (Gdx.input.justTouched() && gameViewport.unproject(tmpVec).y < V_HEIGHT - GAME_HUD_HEIGHT) {
             touchCount++
-            touchInterval = 0.25f
+            touchInterval = TOUCH_INTERVAL
         }
 
         state.currentState = when{

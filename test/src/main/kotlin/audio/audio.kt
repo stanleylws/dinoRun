@@ -34,7 +34,7 @@ private class SoundRequest: Pool.Poolable {
 
     override fun reset() {
         volume = 1f
-        var loop = false
+        loop = false
     }
 }
 
@@ -102,6 +102,7 @@ class DefaultAudioService(private val assets: AssetStorage): AudioService {
 
     override fun pause() {
         currentMusic?.pause()
+        soundCache.values.forEach { it.stop() }
     }
 
     override fun resume() {
@@ -112,6 +113,7 @@ class DefaultAudioService(private val assets: AssetStorage): AudioService {
         currentMusic?.stop()
         if (clearSounds) {
             soundRequests.clear()
+            soundCache.values.forEach { it.stop() }
         }
     }
 

@@ -2,16 +2,16 @@ package ui
 
 import com.badlogic.gdx.scenes.scene2d.Group
 import core.V_HEIGHT_PIXELS
+import core.V_WIDTH_PIXELS
 import ktx.actors.plusAssign
-import ktx.scene2d.Scene2DSkin
-import ktx.scene2d.image
-import ktx.scene2d.label
-import ktx.scene2d.scene2d
+import ktx.scene2d.*
 
 class GameUI: Group() {
-    private val lifeBarImage = scene2d.image(SkinImage.LIFE_BAR_EMPTY.atlasKey)
-    private val diamondCountImage = scene2d.image(SkinImage.DIAMOND_COUNT.atlasKey)
-    private val diamondCountLabel = scene2d.label("")
+    val lifeBarImage = scene2d.image(SkinImage.LIFE_BAR_EMPTY.atlasKey)
+    val diamondCountImage = scene2d.image(SkinImage.DIAMOND_COUNT.atlasKey)
+    val diamondCountLabel = scene2d.label("")
+    val pauseResumeButton = scene2d.imageButton(SkinImageButton.PAUSE_PLAY.name)
+    val soundOnOffButton = scene2d.imageButton(SkinImageButton.SOUND_ON_OFF.name)
 
     init {
         this += lifeBarImage.apply {
@@ -28,6 +28,16 @@ class GameUI: Group() {
             setText(0)
             setFontScale(0.4f)
             setPosition(50f, V_HEIGHT_PIXELS - 45f)
+        }
+
+        this += soundOnOffButton.apply {
+            setSize(25f, 25f)
+            setPosition(V_WIDTH_PIXELS - width - 40f, V_HEIGHT_PIXELS - height - 10f)
+        }
+
+        this += pauseResumeButton.apply {
+            setSize(25f, 25f)
+            setPosition(V_WIDTH_PIXELS - width - 10f, V_HEIGHT_PIXELS - height - 10f)
         }
     }
 

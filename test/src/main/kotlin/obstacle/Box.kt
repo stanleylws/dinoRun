@@ -79,7 +79,7 @@ class Box: Obstacle {
                     delay = 0.1f
                 }
                 self[TransformComponent.mapper]?.let { transform ->
-                    spawnCollectable(CollectableType.DIAMOND, engine, transform.position)
+                    spawnCollectable(CollectableType.LIFE, engine, transform.position)
                 }
             }
         }
