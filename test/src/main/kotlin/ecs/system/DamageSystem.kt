@@ -3,7 +3,6 @@ package ecs.system
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IteratingSystem
-import core.V_WIDTH
 import ecs.component.*
 import event.*
 import ktx.ashley.addComponent
@@ -15,25 +14,15 @@ import kotlin.math.max
 
 private val LOG = logger<RenderSystem>()
 
-private const val DAMAGE_MOVE_OFFSET_SCALE = 2.5f
-private const val DAMAGE_AREA_WIDTH = 1f
-private const val DAMAGE_PER_HIT = 1
 private const val HIT_ANIMATION_DURATION = 0.4f
-private const val DAMAGE_BUFFER_DURATION = 1.4f
+private const val DAMAGE_IMMUNE_DURATION = 1f
 private const val DEATH_EXPLOSION_DURATION = 2f
-
-private var immuneTime = 0f
 
 class DamageSystem(
     private val gameEventManager: GameEventManager
 ): GameEventListener,
-    IteratingSystem(allOf(DamageComponent::class, TransformComponent::class).exclude(RemoveComponent::class).get()){
-    private var offsetX = 0f
-    private val playerEntities by lazy {
-        engine.getEntitiesFor(
-            allOf(PlayerComponent::class).exclude(RemoveComponent::class).get()
-        )
-    }
+    IteratingSystem(allOf(PlayerComponent::class, TransformComponent::class).exclude(RemoveComponent::class).get()) {
+    private var immuneTime = 0f
 
     override fun addedToEngine(engine: Engine?) {
         super.addedToEngine(engine)
@@ -53,31 +42,16 @@ class DamageSystem(
     override fun processEntity(entity: Entity, deltaTime: Float) {
         val transform = entity[TransformComponent.mapper]
         requireNotNull(transform) { "Entity |entity| must have a TransformComponent. entity = $entity" }
+        val state = entity[StateComponent.mapper]
+        requireNotNull(state) { "Entity |entity| must have a StateComponent. entity = $entity" }
+        val graphic = entity[GraphicComponent.mapper]
+        requireNotNull(graphic) { "Entity |entity| must have a GraphicComponent. entity = $entity" }
 
-        // move in and out of the explosion area
-        transform.interpolatedPosition.x = transform.position.x + offsetX
-
-        // do damage
-        playerEntities.forEach{ playerEntity ->
-            val tf = playerEntity[TransformComponent.mapper]
-            requireNotNull(tf) { "Entity |entity| must have a TransformComponent. entity = $entity" }
-            val state = playerEntity[StateComponent.mapper]
-            requireNotNull(state) { "Entity |entity| must have a StateComponent. entity = $playerEntity" }
-            val graphic = playerEntity[GraphicComponent.mapper]
-            requireNotNull(graphic) { "Entity |entity| must have a GraphicComponent. entity = $playerEntity" }
-
-            if (DAMAGE_BUFFER_DURATION - immuneTime >= HIT_ANIMATION_DURATION && state.currentState == State.HURT) {
-                state.currentState = State.IDLE
-                graphic.sprite.setAlpha(0.5f)
-            } else if (immuneTime <= 0f) {
-                graphic.sprite.setAlpha(1f)
-            }
-
-            if (tf.position.x <= DAMAGE_AREA_WIDTH) {
-                doDamage(playerEntity, DAMAGE_PER_HIT)
-            }
-
-            offsetX = DAMAGE_MOVE_OFFSET_SCALE * (V_WIDTH / 2f - tf.position.x) / (V_WIDTH / 2)
+        if (immuneTime < DAMAGE_IMMUNE_DURATION && state.currentState == State.HURT) {
+            state.currentState = State.IDLE
+            graphic.sprite.setAlpha(0.5f)
+        } else if (immuneTime <= 0f) {
+            graphic.sprite.setAlpha(1f)
         }
     }
 
@@ -91,7 +65,7 @@ class DamageSystem(
 
         player.life -= damage
         state.currentState = State.HURT
-        immuneTime = DAMAGE_BUFFER_DURATION
+        immuneTime = HIT_ANIMATION_DURATION + DAMAGE_IMMUNE_DURATION
 
         if (player.life <= 0f) {
             playerEntity.addComponent<RemoveComponent>(engine) {

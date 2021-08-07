@@ -24,7 +24,6 @@ enum class AnimationType(
     DINO_ATTACK("dino_kick", 0.5f, Animation.PlayMode.NORMAL),
     DINO_JUMP("dino_jump"),
     DINO_HURT("dino_hurt", 0.5f, Animation.PlayMode.NORMAL, SoundAsset.PLAYER_DAMAGED, 0.2f),
-    EXPLOSION("explosion", 7f),
     SPIKE("spike_idle"),
     BOX_IDLE("box_idle"),
     BOX_HIT("box_hit", 0.5f, Animation.PlayMode.NORMAL, SoundAsset.BOX_HIT, 0.2f),

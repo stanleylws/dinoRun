@@ -84,22 +84,6 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
             with<StateComponent>()
             with<AnimationComponent>()
         }
-
-        repeat(6){ index ->
-            var randomSize = 5f + Math.random().toFloat() * GOLDEN_RATIO
-            game.engine.entity {
-                with<TransformComponent>() {
-                    size.set(randomSize, randomSize)
-                    setInitialPosition(-1f - size.x / 2f - index / 3f,-0.5f, if (index % 2 == 0) 2f else 0f)
-                }
-                with<DamageComponent>()
-                with<GraphicComponent>()
-                with<AnimationComponent>() {
-                    type = AnimationType.EXPLOSION
-                    offsetTime = index * GOLDEN_RATIO
-                }
-            }
-        }
     }
 
     override fun show() {
