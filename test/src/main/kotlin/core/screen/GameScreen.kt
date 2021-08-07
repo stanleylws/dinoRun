@@ -1,6 +1,7 @@
 package core.screen
 
 import asset.*
+import com.badlogic.ashley.core.Entity
 import core.MyGame
 import core.V_WIDTH
 import ecs.component.*
@@ -48,12 +49,17 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
     }
 
     private fun resetGame() {
-        // remove existing obstacles and collectables
-        game.engine.getEntitiesFor(allOf(ObstacleComponent::class, CollectableComponent::class).exclude(RemoveComponent::class).get()).forEach {
-            it.addComponent<RemoveComponent>(game.engine)
+        // remove all entities
+        game.engine.removeAllEntities()
+
+        val player = spawnPlayer()
+        player[PlayerComponent.mapper]?.let {
+            ui.updateLife(it.life)
+            ui.updateDiamondNumber(it.diamondCollected)
         }
-        game.engine.getSystem<ObstacleSystem>().setSpawning(true)
-        spawnPlayer()
+
+        val obstacleSystem = game.engine.getSystem<ObstacleSystem>()
+        obstacleSystem.setSpawning(true)
     }
 
     init {
@@ -84,9 +90,9 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
         spawnPlayer()
     }
 
-    private fun spawnPlayer() {
+    private fun spawnPlayer(): Entity {
         // create player entity
-        game.engine.entity {
+        return game.engine.entity {
             with<TransformComponent>() {
                 size.set(2f, 2f)
                 setInitialPosition(V_WIDTH.div(2).toFloat() - size.x / 2f, 1f, 1f)
@@ -162,10 +168,11 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
                 }
             }
             is GameEvent.PlayerDeath -> {
+                ui.updateLife(0)
+                ui.resetButton.isVisible = true
                 game.preferences.flush {
                     this["highscore"] = event.distance
                 }
-                ui.resetButton.isVisible = true
             }
         }
     }
