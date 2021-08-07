@@ -12,6 +12,7 @@ class GameUI: Group() {
     val diamondCountLabel = scene2d.label("")
     val pauseResumeButton = scene2d.imageButton(SkinImageButton.PAUSE_PLAY.name)
     val soundOnOffButton = scene2d.imageButton(SkinImageButton.SOUND_ON_OFF.name)
+    val resetButton = scene2d.imageButton(SkinImageButton.RESET.name)
 
     init {
         this += lifeBarImage.apply {
@@ -28,6 +29,11 @@ class GameUI: Group() {
             setText(0)
             setFontScale(0.4f)
             setPosition(50f, V_HEIGHT_PIXELS - 45f)
+        }
+
+        this += resetButton.apply {
+            setSize(25f, 25f)
+            setPosition(V_WIDTH_PIXELS - width - 70f, V_HEIGHT_PIXELS - height - 10f)
         }
 
         this += soundOnOffButton.apply {

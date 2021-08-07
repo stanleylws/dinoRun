@@ -133,7 +133,11 @@ class ObstacleSystem(
         )
     }
 
+    fun setSpawning(value: Boolean) {
+        spawn = value
+    }
+
     override fun onEvent(event: GameEvent) {
-        spawn = false
+        setSpawning(false)
     }
 }

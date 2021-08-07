@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.Vector2
 import ecs.component.*
 import ecs.system.RenderSystem
 import ktx.ashley.get
-import ktx.log.info
 import ktx.log.logger
 
 private val LOG = logger<RenderSystem>()

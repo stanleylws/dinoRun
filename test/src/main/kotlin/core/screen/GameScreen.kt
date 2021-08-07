@@ -8,12 +8,10 @@ import ecs.system.*
 import event.GameEvent
 import event.GameEventListener
 import ktx.actors.onChangeEvent
+import ktx.actors.onClick
 import ktx.actors.plusAssign
 import ktx.app.KtxScreen
-import ktx.ashley.entity
-import ktx.ashley.get
-import ktx.ashley.getSystem
-import ktx.ashley.with
+import ktx.ashley.*
 import ktx.collections.toGdxArray
 import ktx.log.logger
 import ktx.preferences.flush
@@ -23,12 +21,16 @@ import kotlin.math.min
 
 private val LOG = logger<RenderSystem>()
 private const val MAX_DELTA_TIME = 1 / 20f
-private const val GOLDEN_RATIO = 1.618f
 
 class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
     private val renderSystem by lazy { game.engine.getSystem<RenderSystem>()  }
 
     private val ui = GameUI().apply {
+        resetButton.onClick {
+            resetGame()
+            isVisible = false
+        }
+
         soundOnOffButton.onChangeEvent {
             when(this.isChecked) {
                 true -> game.audioService.pause()
@@ -44,6 +46,16 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
         }
 
     }
+
+    private fun resetGame() {
+        // remove existing obstacles and collectables
+        game.engine.getEntitiesFor(allOf(ObstacleComponent::class, CollectableComponent::class).exclude(RemoveComponent::class).get()).forEach {
+            it.addComponent<RemoveComponent>(game.engine)
+        }
+        game.engine.getSystem<ObstacleSystem>().setSpawning(true)
+        spawnPlayer()
+    }
+
     init {
         val font = game.assets[BitmapFontAsset.FONT_DEFAULT.descriptor]
         // add system into engine
@@ -69,6 +81,10 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
             addSystem(DebugSystem(game.gameEventManager))
         }
 
+        spawnPlayer()
+    }
+
+    private fun spawnPlayer() {
         // create player entity
         game.engine.entity {
             with<TransformComponent>() {
@@ -95,10 +111,11 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
         game.audioService.play(MusicAsset.BGM, 0.5f)
         ui.run {
             updateLife(MAX_LIFE)
+            resetButton.isVisible = false
             soundOnOffButton.run {
                 this.isChecked = false
             }
-                pauseResumeButton.run {
+            pauseResumeButton.run {
                 this.isChecked = false
             }
         }
@@ -148,6 +165,7 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
                 game.preferences.flush {
                     this["highscore"] = event.distance
                 }
+                ui.resetButton.isVisible = true
             }
         }
     }

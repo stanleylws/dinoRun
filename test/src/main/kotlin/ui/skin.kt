@@ -10,7 +10,7 @@ import ktx.style.label
 import ktx.style.skin
 
 enum class SkinImageButton {
-    PAUSE_PLAY, SOUND_ON_OFF
+    PAUSE_PLAY, SOUND_ON_OFF, RESET
 }
 
 enum class SkinImage(val atlasKey: String) {
@@ -22,7 +22,8 @@ enum class SkinImage(val atlasKey: String) {
     PLAY("play_button"),
     PAUSE("pause_button"),
     SOUND_ON("music_button"),
-    SOUND_OFF("mute_button")
+    SOUND_OFF("mute_button"),
+    RESET("reset_button")
 }
 
 fun createSkin(assets: AssetStorage) {
@@ -48,5 +49,10 @@ private fun Skin.createImageButtonStyles(skin: Skin) {
         imageUp = skin.getDrawable(SkinImage.PAUSE.atlasKey)
         imageChecked = skin.getDrawable(SkinImage.PLAY.atlasKey)
         imageDown = imageChecked
+    }
+
+    imageButton(SkinImageButton.RESET.name) {
+        imageUp = skin.getDrawable(SkinImage.RESET.atlasKey)
+        imageDown = imageUp
     }
 }

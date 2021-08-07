@@ -6,7 +6,7 @@ filter: Nearest, Nearest
 repeat: none
 diamond_count
   rotate: false
-  xy: 405, 425
+  xy: 515, 535
   size: 18, 14
   orig: 18, 14
   offset: 0, 0
@@ -20,28 +20,28 @@ font_default
   index: -1
 heart_empty
   rotate: false
-  xy: 515, 717
+  xy: 717, 919
   size: 66, 34
   orig: 66, 34
   offset: 0, 0
   index: -1
 heart_one
   rotate: false
-  xy: 203, 203
+  xy: 405, 405
   size: 66, 34
   orig: 66, 34
   offset: 0, 0
   index: -1
 heart_three
   rotate: false
-  xy: 1, 1
+  xy: 203, 203
   size: 66, 34
   orig: 66, 34
   offset: 0, 0
   index: -1
 heart_two
   rotate: false
-  xy: 717, 919
+  xy: 1, 1
   size: 66, 34
   orig: 66, 34
   offset: 0, 0
@@ -55,21 +55,28 @@ music_button
   index: -1
 mute_button
   rotate: false
-  xy: 203, 239
+  xy: 515, 551
   size: 200, 200
   orig: 200, 200
   offset: 0, 0
   index: -1
 pause_button
   rotate: false
-  xy: 515, 753
+  xy: 1, 37
   size: 200, 200
   orig: 200, 200
   offset: 0, 0
   index: -1
 play_button
   rotate: false
-  xy: 1, 37
+  xy: 203, 239
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1
+reset_button
+  rotate: false
+  xy: 515, 753
   size: 200, 200
   orig: 200, 200
   offset: 0, 0
