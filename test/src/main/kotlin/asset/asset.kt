@@ -42,7 +42,8 @@ enum class SoundAsset(
     BOX_BREAK("box-break.wav"),
     PLAYER_DAMAGED("player-damaged.wav"),
     PLAYER_WALK("player-walk.wav"),
-    PLAYER_RUN("player-run.wav")
+    PLAYER_RUN("player-run.wav"),
+    PLAYER_JUMP("player-jump.wav")
 }
 
 enum class MusicAsset(

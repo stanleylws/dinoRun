@@ -30,7 +30,7 @@ const val V_WIDTH_PIXELS = 384
 const val V_HEIGHT_PIXELS = 216
 const val WORLD_TO_PIXEL_RATIO = 24
 
-const val IN_DEBUGGING = true
+const val IN_DEBUGGING = false
 
 const val SCROLL_SPEED_TO_WORLD_RATIO =  1f / 0.0625f
 const val DEFAULT_SCROLL_SPEED = 0.05f

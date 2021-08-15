@@ -9,12 +9,11 @@ import core.V_HEIGHT
 import core.V_WIDTH
 import ecs.component.*
 import ktx.ashley.allOf
-import ktx.ashley.exclude
 import ktx.ashley.get
-import ktx.log.info
 import ktx.log.logger
 
 private const val UPDATE_RATE = 1 / 60f
+private const val JUMP_SPEED = 5f
 private val LOG = logger<RenderSystem>()
 
 class MoveSystem:
@@ -79,18 +78,44 @@ class MoveSystem:
         move.speed.x = when(state.currentState) {
             State.WALK -> 0f
             State.RUN -> worldScrollSpeed
+            State.JUMP -> move.speed.x
+            State.JUMPING -> move.speed.x
             else -> -1 * worldScrollSpeed
         }
-        move.acceletration.y = when(state.currentState) {
-            State.FAINT -> -10f
+
+        move.speed.y = when(state.currentState) {
+            State.JUMP -> JUMP_SPEED
+            State.JUMPING -> move.speed.y
+            State.FAINT -> move.speed.y
             else -> 0f
         }
+
+        move.acceletration.y = when(state.currentState) {
+            State.JUMPING -> GRAVITATIONAL_ACCELERATION
+            State.FAINT -> GRAVITATIONAL_ACCELERATION
+            else -> 0f
+        }
+
         player.distance += when(state.currentState) {
             State.WALK -> worldScrollSpeed * deltaTime
             State.RUN -> worldScrollSpeed * 2 * deltaTime
             else -> 0f
         }
         moveEntity(transform, move, deltaTime)
+
+        transform.position.x = MathUtils.clamp(
+            transform.position.x,
+            0f ,
+            V_WIDTH.toFloat() - transform.size.x,
+        )
+
+        transform.position.y = MathUtils.clamp(
+            transform.position.y,
+            if (state.currentState == State.FAINT) -1f else 1f,
+            V_HEIGHT + 1f - transform.size.y
+        )
+
+        if (state.currentState == State.JUMP && transform.position.y > 1f) state.currentState = State.JUMPING
     }
 
     private fun moveEntity(transform: TransformComponent, move: MoveComponent, deltaTime: Float) {

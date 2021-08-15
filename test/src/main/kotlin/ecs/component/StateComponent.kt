@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Pool
 import ktx.ashley.mapperFor
 
 enum class State {
-    IDLE, WALK, RUN, ATTACK, HURT, FAINT
+    IDLE, WALK, RUN, JUMP, JUMPING, ATTACK, HURT, FAINT
 }
 
 class StateComponent: Component, Pool.Poolable {

@@ -66,14 +66,14 @@ diamond
   size: 18, 14
   orig: 18, 14
   offset: 0, 0
-  index: 0
+  index: 4
 diamond
   rotate: false
   xy: 814, 12
   size: 18, 14
   orig: 18, 14
   offset: 0, 0
-  index: 4
+  index: 0
 diamond
   rotate: false
   xy: 814, 12
@@ -118,7 +118,7 @@ diamond
   index: 8
 dino_hurt
   rotate: false
-  xy: 286, 2
+  xy: 312, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
@@ -139,14 +139,14 @@ dino_hurt
   index: 0
 dino_idle
   rotate: false
-  xy: 338, 2
+  xy: 364, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 1
 dino_idle
   rotate: false
-  xy: 416, 2
+  xy: 442, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
@@ -158,37 +158,51 @@ dino_idle
   orig: 24, 24
   offset: 0, 0
   index: 2
-dino_jump
+dino_jump_normal
   rotate: false
-  xy: 442, 2
+  xy: 338, 2
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+dino_walk
+  rotate: false
+  xy: 338, 2
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: 2
+dino_jump_running
+  rotate: false
+  xy: 234, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 dino_kick
   rotate: false
-  xy: 260, 2
+  xy: 286, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 3
 dino_idle
   rotate: false
-  xy: 260, 2
+  xy: 286, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 0
 dino_kick
   rotate: false
-  xy: 260, 2
+  xy: 286, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 0
 dino_kick
   rotate: false
-  xy: 468, 2
+  xy: 494, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
@@ -202,21 +216,21 @@ dino_kick
   index: 1
 dino_run
   rotate: false
-  xy: 234, 2
+  xy: 260, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 4
 dino_run
   rotate: false
-  xy: 364, 2
+  xy: 390, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 1
 dino_run
   rotate: false
-  xy: 494, 2
+  xy: 468, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
@@ -258,14 +272,7 @@ dino_walk
   index: 5
 dino_walk
   rotate: false
-  xy: 312, 2
-  size: 24, 24
-  orig: 24, 24
-  offset: 0, 0
-  index: 2
-dino_walk
-  rotate: false
-  xy: 390, 2
+  xy: 416, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
@@ -297,14 +304,7 @@ heart
   size: 18, 14
   orig: 18, 14
   offset: 0, 0
-  index: 1
-heart
-  rotate: false
-  xy: 754, 12
-  size: 18, 14
-  orig: 18, 14
-  offset: 0, 0
-  index: 3
+  index: 0
 heart
   rotate: false
   xy: 754, 12
@@ -318,7 +318,14 @@ heart
   size: 18, 14
   orig: 18, 14
   offset: 0, 0
-  index: 0
+  index: 1
+heart
+  rotate: false
+  xy: 754, 12
+  size: 18, 14
+  orig: 18, 14
+  offset: 0, 0
+  index: 3
 heart
   rotate: false
   xy: 794, 12

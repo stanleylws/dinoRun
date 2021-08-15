@@ -34,10 +34,15 @@ class PlayerAnimationSystem: IteratingSystem(allOf(PlayerComponent::class, State
         requireNotNull(animation) { "Entity |entity| must have a AnimationComponent. entity = $entity" }
         val player = entity[PlayerComponent.mapper]
         requireNotNull(player) { "Entity |entity| must have a PlayerComponent. entity = $entity" }
+        val move = entity[MoveComponent.mapper]
+        requireNotNull(move) { "Entity |entity| must have a MoveComponent. entity = $entity" }
+
 
         animation.type = when(state.currentState) {
             State.WALK -> AnimationType.DINO_WALK
             State.RUN -> AnimationType.DINO_RUN
+            State.JUMP -> if (move.speed.x <= 0f) AnimationType.DINO_NORMAL_JUMP else AnimationType.DINO_RUNNING_JUMP
+            State.JUMPING -> if (move.speed.x <= 0f) AnimationType.DINO_NORMAL_JUMP else AnimationType.DINO_RUNNING_JUMP
             State.ATTACK -> AnimationType.DINO_ATTACK
             State.HURT -> AnimationType.DINO_HURT
             State.FAINT -> AnimationType.DINO_HURT

@@ -25,8 +25,10 @@ class DebugSystem(private val gameEventManager: GameEventManager): IteratingSyst
         requireNotNull(player) { "Entity |entity| must have a PlayerComponent. entity = $entity" }
         val move = entity[MoveComponent.mapper]
         requireNotNull(move) { "Entity |entity| must have a MoveComponent. entity = $entity" }
+        val state = entity[StateComponent.mapper]
+        requireNotNull(state) { "Entity |entity| must have a StateComponent. entity = $entity" }
 
-        Gdx.graphics.setTitle("fps:${(1 / delta).toInt()} life: ${player.life} speed:${move.speed} acc: ${move.acceletration}")
+        Gdx.graphics.setTitle("state:${state.currentState} life: ${player.life} speed:${move.speed} acc: ${move.acceletration}")
 
         if (Gdx.input.isKeyPressed(Input.Keys.NUMPAD_1)) {
             player.shield = MAX_SHIELD
