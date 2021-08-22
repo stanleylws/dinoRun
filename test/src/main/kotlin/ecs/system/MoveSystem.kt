@@ -3,10 +3,7 @@ package ecs.system
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.MathUtils
-import core.DEFAULT_SCROLL_SPEED
-import core.SCROLL_SPEED_TO_WORLD_RATIO
-import core.V_HEIGHT
-import core.V_WIDTH
+import core.*
 import ecs.component.*
 import ktx.ashley.allOf
 import ktx.ashley.get
@@ -79,22 +76,18 @@ class MoveSystem:
             State.WALK -> 0f
             State.RUN -> worldScrollSpeed
             State.JUMP -> move.speed.x
-            State.JUMPING -> move.speed.x
+            State.IN_AIR -> move.speed.x
             else -> -1 * worldScrollSpeed
         }
 
         move.speed.y = when(state.currentState) {
             State.JUMP -> JUMP_SPEED
-            State.JUMPING -> move.speed.y
+            State.IN_AIR -> move.speed.y
             State.FAINT -> move.speed.y
             else -> 0f
         }
 
-        move.acceletration.y = when(state.currentState) {
-            State.JUMPING -> GRAVITATIONAL_ACCELERATION
-            State.FAINT -> GRAVITATIONAL_ACCELERATION
-            else -> 0f
-        }
+        move.acceletration.y = GRAVITATIONAL_ACCELERATION
 
         player.distance += when(state.currentState) {
             State.WALK -> worldScrollSpeed * deltaTime
@@ -111,11 +104,11 @@ class MoveSystem:
 
         transform.position.y = MathUtils.clamp(
             transform.position.y,
-            if (state.currentState == State.FAINT) -1f else 1f,
+            if (state.currentState == State.FAINT) -1f else GROUND_HEIGHT,
             V_HEIGHT + 1f - transform.size.y
         )
 
-        if (state.currentState == State.JUMP && transform.position.y > 1f) state.currentState = State.JUMPING
+        if (state.currentState == State.JUMP && transform.position.y > GROUND_HEIGHT) state.currentState = State.IN_AIR
     }
 
     private fun moveEntity(transform: TransformComponent, move: MoveComponent, deltaTime: Float) {

@@ -5,8 +5,9 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
+import core.GRAVITATIONAL_ACCELERATION
+import core.GROUND_HEIGHT
 import ecs.component.*
-import ecs.system.POWER_UP_HEIGHT
 import ktx.ashley.addComponent
 import ktx.ashley.entity
 import ktx.ashley.get
@@ -88,11 +89,11 @@ class Box: Obstacle {
     private fun spawnCollectable(collectableType: CollectableType, engine: Engine, position: Vector3) {
         engine.entity {
             with<TransformComponent> {
-                setInitialPosition(position.x, POWER_UP_HEIGHT + POWER_UP_SPAWN_Y_OFFSET, position.z)
+                setInitialPosition(position.x, GROUND_HEIGHT + POWER_UP_SPAWN_Y_OFFSET, position.z)
             }
-            with<ColliderComponent>()
             with<MoveComponent> {
                 speed.y = POWER_UP_SPAWN_SPEED
+                acceletration.y = GRAVITATIONAL_ACCELERATION
             }
             with<CollectableComponent> { type = collectableType }
             with<GraphicComponent>()

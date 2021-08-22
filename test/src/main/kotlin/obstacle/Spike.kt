@@ -36,19 +36,7 @@ class Spike: Obstacle {
        return colliderModifier
     }
 
-    override fun onInteraction(self: Entity, other: Entity, engine: Engine) {
-         if (other[PlayerComponent.mapper] == null) return
+    override fun onInteraction(self: Entity, other: Entity, engine: Engine) = Unit
 
-        other[StateComponent.mapper]?.let { state ->
-            if (state.currentState.equals(State.RUN)) {
-                performAction(self, other, engine)
-            }
-        }
-    }
-
-    override fun performAction(self: Entity, other: Entity, engine: Engine) {
-        self[TransformComponent.mapper]?.let { transform ->
-            transform.position.y = 1.2f
-        }
-    }
+    override fun performAction(self: Entity, other: Entity, engine: Engine) = Unit
 }

@@ -2,6 +2,7 @@ package core.screen
 
 import asset.*
 import com.badlogic.ashley.core.Entity
+import core.GROUND_HEIGHT
 import core.MyGame
 import core.V_WIDTH
 import ecs.component.*
@@ -95,7 +96,7 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
         return game.engine.entity {
             with<TransformComponent>() {
                 size.set(2f, 2f)
-                setInitialPosition(V_WIDTH.div(2).toFloat() - size.x / 2f, 1f, 1f)
+                setInitialPosition(V_WIDTH.div(2).toFloat() - size.x / 2f, GROUND_HEIGHT, 1f)
             }
             with<ColliderComponent> {
                 modifier = ColliderModifier(0.4f, 0.3f, 0.5f, 1f)

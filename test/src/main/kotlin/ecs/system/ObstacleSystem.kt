@@ -6,7 +6,6 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.MathUtils
 import core.CURRENT_SCROLL_SPEED
 import core.SCROLL_SPEED_TO_WORLD_RATIO
-import core.V_WIDTH
 import ecs.component.*
 import event.*
 import ktx.ashley.*
@@ -49,16 +48,16 @@ class ObstacleSystem(
         spawnTime -= deltaTime
         if (spawn && spawnTime <= 0f) {
             spawnTime = MathUtils.random(MIN_SPAWN_INTERVAL, MAX_SPAWN_INTERVAL)
-            spawnObstacle(if (Math.random() > 0.7) ObstacleType.BOX else ObstacleType.SPIKE, V_WIDTH.toFloat(), 1f)
+            spawnObstacle(if (Math.random() > 0.7) ObstacleType.BOX else ObstacleType.SPIKE)
         }
     }
 
-    private fun spawnObstacle(obstacleType: ObstacleType, posX: Float, posY: Float) {
-        val obstacle = createObstacleInstance(obstacleType)
+    private fun spawnObstacle(type: ObstacleType) {
+        val obstacle = createObstacleInstance(type)
         engine.entity {
             with<TransformComponent> {
                 size.set(obstacle.getSize())
-                setInitialPosition(posX, posY, 0f)
+                setInitialPosition(type.spawnPosition.x, type.spawnPosition.y, 0f)
             }
             with<ColliderComponent> {
                 modifier = obstacle.getColliderModifier()
@@ -69,9 +68,9 @@ class ObstacleSystem(
             }
             with<ObstacleComponent> { instance = obstacle }
             with<GraphicComponent>()
-            with<AnimationComponent> { type = obstacle.getAnimationType() }
+            with<AnimationComponent> { this.type = obstacle.getAnimationType() }
         }
-        LOG.info { "spawn obstacle $obstacleType" }
+        LOG.info { "spawn obstacle $type" }
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {

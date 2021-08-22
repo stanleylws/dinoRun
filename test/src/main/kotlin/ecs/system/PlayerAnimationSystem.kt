@@ -42,7 +42,7 @@ class PlayerAnimationSystem: IteratingSystem(allOf(PlayerComponent::class, State
             State.WALK -> AnimationType.DINO_WALK
             State.RUN -> AnimationType.DINO_RUN
             State.JUMP -> if (move.speed.x <= 0f) AnimationType.DINO_NORMAL_JUMP else AnimationType.DINO_RUNNING_JUMP
-            State.JUMPING -> if (move.speed.x <= 0f) AnimationType.DINO_NORMAL_JUMP else AnimationType.DINO_RUNNING_JUMP
+            State.IN_AIR -> if (move.speed.x <= 0f) AnimationType.DINO_NORMAL_JUMP else AnimationType.DINO_RUNNING_JUMP
             State.ATTACK -> AnimationType.DINO_ATTACK
             State.HURT -> AnimationType.DINO_HURT
             State.FAINT -> AnimationType.DINO_HURT

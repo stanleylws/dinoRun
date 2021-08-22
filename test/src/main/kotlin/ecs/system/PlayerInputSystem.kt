@@ -8,8 +8,8 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.viewport.Viewport
 import core.CURRENT_SCROLL_SPEED
 import core.DEFAULT_SCROLL_SPEED
+import core.GROUND_HEIGHT
 import core.V_HEIGHT
-import core.V_HEIGHT_PIXELS
 import ecs.component.*
 import ktx.ashley.allOf
 import ktx.ashley.exclude
@@ -43,12 +43,12 @@ class PlayerInputSystem(
 
         jumpCd = max(0f, jumpCd - deltaTime)
 
-        val onGround = abs(transform.position.y - 1f) <= FLOAT_EPSILON
-        if (onGround && state.currentState == State.JUMPING) {
+        val onGround = abs(transform.position.y - GROUND_HEIGHT) <= FLOAT_EPSILON
+        if (onGround && state.currentState == State.IN_AIR) {
             state.currentState = State.IDLE
             jumpCd = JUMP_COLD_DOWN
         }
-        val canJump = jumpCd <= 0f && onGround && state.currentState != State.JUMP && state.currentState != State.JUMPING
+        val canJump = jumpCd <= 0f && onGround && state.currentState != State.JUMP && state.currentState != State.IN_AIR
         LOG.info { "$canJump cd $jumpCd pos ${transform.position.y} state ${state.currentState}" }
 
         touchInterval = max(0f, touchInterval - deltaTime)
@@ -61,7 +61,7 @@ class PlayerInputSystem(
 
         state.currentState = when {
             // not processing when in hurt state
-            state.currentState == State.HURT || state.currentState == State.JUMP || state.currentState == State.JUMPING -> state.currentState
+            state.currentState == State.HURT || state.currentState == State.JUMP || state.currentState == State.IN_AIR -> state.currentState
 
             Gdx.input.isKeyPressed(Input.Keys.SPACE) && canJump -> State.JUMP
             // touch input
@@ -76,7 +76,7 @@ class PlayerInputSystem(
 
         CURRENT_SCROLL_SPEED = when(state.currentState) {
             State.JUMP -> CURRENT_SCROLL_SPEED
-            State.JUMPING -> CURRENT_SCROLL_SPEED
+            State.IN_AIR -> CURRENT_SCROLL_SPEED
             State.WALK -> DEFAULT_SCROLL_SPEED * 2
             State.RUN -> DEFAULT_SCROLL_SPEED * 4
             else -> DEFAULT_SCROLL_SPEED

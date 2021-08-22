@@ -5,6 +5,8 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pool
+import core.GROUND_HEIGHT
+import core.V_WIDTH
 import ktx.ashley.mapperFor
 import obstacle.Box
 import obstacle.Empty
@@ -20,10 +22,12 @@ interface Obstacle {
     fun performAction(self: Entity, other: Entity,  engine: Engine)
 }
 
-enum class ObstacleType {
-    NONE,
-    SPIKE,
-    BOX
+enum class ObstacleType(
+    val spawnPosition: Vector2
+) {
+    NONE(Vector2()),
+    SPIKE(Vector2(V_WIDTH.toFloat(), GROUND_HEIGHT + 0.2f)),
+    BOX(Vector2(V_WIDTH.toFloat(), GROUND_HEIGHT))
 }
 
 class ObstacleComponent: Component, Pool.Poolable {
