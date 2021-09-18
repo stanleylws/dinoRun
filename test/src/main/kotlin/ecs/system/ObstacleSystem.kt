@@ -70,7 +70,6 @@ class ObstacleSystem(
             with<GraphicComponent>()
             with<AnimationComponent> { this.type = obstacle.getAnimationType() }
         }
-        LOG.info { "spawn obstacle $type" }
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {

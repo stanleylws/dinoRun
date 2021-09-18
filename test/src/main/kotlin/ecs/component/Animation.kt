@@ -19,16 +19,16 @@ enum class AnimationType(
 ) {
     NONE(""),
     DINO_IDLE("dino_idle", 0.5f),
-    DINO_WALK("dino_walk", 0.5f, soundAsset = SoundAsset.PLAYER_WALK, volume = 0.2f, loopSound = true),
-    DINO_RUN("dino_run", 0.6f, soundAsset = SoundAsset.PLAYER_RUN, volume = 0.2f, loopSound = true),
+    DINO_WALK("dino_walk", 0.5f, soundAsset = SoundAsset.PLAYER_WALK, volume = 0.1f, loopSound = true),
+    DINO_RUN("dino_run", 0.6f, soundAsset = SoundAsset.PLAYER_RUN, volume = 0.1f, loopSound = true),
     DINO_ATTACK("dino_kick", 0.5f, Animation.PlayMode.NORMAL),
-    DINO_NORMAL_JUMP("dino_jump_normal", soundAsset = SoundAsset.PLAYER_JUMP, volume = 0.2f),
-    DINO_RUNNING_JUMP("dino_jump_running", soundAsset = SoundAsset.PLAYER_JUMP, volume = 0.2f),
-    DINO_HURT("dino_hurt", 0.5f, Animation.PlayMode.NORMAL, SoundAsset.PLAYER_DAMAGED, 0.2f),
+    DINO_NORMAL_JUMP("dino_jump_normal", soundAsset = SoundAsset.PLAYER_JUMP, volume = 0.1f),
+    DINO_RUNNING_JUMP("dino_jump_running", soundAsset = SoundAsset.PLAYER_JUMP, volume = 0.1f),
+    DINO_HURT("dino_hurt", 0.5f, Animation.PlayMode.NORMAL, SoundAsset.PLAYER_DAMAGED, 0.1f),
     SPIKE("spike_idle"),
     BOX_IDLE("box_idle"),
-    BOX_HIT("box_hit", 0.5f, Animation.PlayMode.NORMAL, SoundAsset.BOX_HIT, 0.2f),
-    BOX_BREAK("box_break", 0.5f, Animation.PlayMode.NORMAL, SoundAsset.BOX_BREAK, 0.2f),
+    BOX_HIT("box_hit", 0.5f, Animation.PlayMode.NORMAL, SoundAsset.BOX_HIT, 0.1f),
+    BOX_BREAK("box_break", 0.5f, Animation.PlayMode.NORMAL, SoundAsset.BOX_BREAK, 0.1f),
     HEART("heart", 0.5f),
     DIAMOND("diamond", 0.5f)
 }

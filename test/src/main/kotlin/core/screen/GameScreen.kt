@@ -2,23 +2,27 @@ package core.screen
 
 import asset.*
 import com.badlogic.ashley.core.Entity
-import core.GROUND_HEIGHT
-import core.MyGame
-import core.V_WIDTH
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
+import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.utils.Align
+import core.*
 import ecs.component.*
 import ecs.system.*
 import event.GameEvent
 import event.GameEventListener
-import ktx.actors.onChangeEvent
-import ktx.actors.onClick
-import ktx.actors.plusAssign
+import ktx.actors.*
 import ktx.app.KtxScreen
 import ktx.ashley.*
 import ktx.collections.toGdxArray
 import ktx.log.logger
 import ktx.preferences.flush
 import ktx.preferences.set
+import ktx.scene2d.actors
+import ktx.scene2d.label
+import ktx.scene2d.table
 import ui.GameUI
+import kotlin.math.max
 import kotlin.math.min
 
 private val LOG = logger<RenderSystem>()
@@ -26,6 +30,12 @@ private const val MAX_DELTA_TIME = 1 / 20f
 
 class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
     private val renderSystem by lazy { game.engine.getSystem<RenderSystem>()  }
+    lateinit var touchToBeginLabel: Label
+    lateinit var countDownLabel: Label
+
+    private var gameStartCounting = false
+    private var gameStarted = false
+    private var startCountDown = 3f
 
     private val ui = GameUI().apply {
         resetButton.onClick {
@@ -89,6 +99,9 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
         }
 
         spawnPlayer()
+        CURRENT_SCROLL_SPEED = DEFAULT_SCROLL_SPEED * 2
+        game.engine.getSystem<PlayerInputSystem>().setProcessing(false)
+        game.engine.getSystem<ObstacleSystem>().setProcessing(false)
     }
 
     private fun spawnPlayer(): Entity {
@@ -104,18 +117,46 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
             with<MoveComponent>()
             with<GraphicComponent>()
             with<PlayerComponent>()
-            with<StateComponent>()
+            with<StateComponent>() {
+                currentState = State.WALK
+            }
             with<AnimationComponent>()
         }
     }
 
     override fun show() {
+        game.stage.actors {
+            table {
+                defaults().fillX().expandX()
+                touchToBeginLabel = label("Touch To Begin") { cell ->
+                    wrap = true
+                    setAlignment(Align.center)
+                    setFontScale(0.7f)
+                    cell.pad(5f)
+                }
+                row()
+                countDownLabel = label("$startCountDown"){ cell ->
+                    wrap = true
+                    setAlignment(Align.center)
+                    color.a = 0f
+                    setFontScale(0.7f)
+                    cell.pad(5f)
+                }
+
+                setFillParent(true)
+                pack()
+            }
+        }
+        touchToBeginLabel += forever(sequence(fadeOut(1f) + fadeIn((1f)) + delay(2f)))
+    }
+
+    private fun startGame() {
         game.gameEventManager.run {
             addListener(GameEvent.Collect::class, this@GameScreen)
             addListener(GameEvent.PlayerDamaged::class, this@GameScreen)
             addListener(GameEvent.PlayerDeath::class, this@GameScreen)
         }
-        game.audioService.play(MusicAsset.BGM, 0.5f)
+
         ui.run {
             updateLife(MAX_LIFE)
             resetButton.isVisible = false
@@ -127,6 +168,10 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
             }
         }
         game.stage += ui
+        game.engine.getSystem<PlayerInputSystem>().setProcessing(true)
+        game.engine.getSystem<ObstacleSystem>().setProcessing(true)
+        gameStartCounting = false
+        gameStarted = true
     }
 
     override fun hide() {
@@ -135,7 +180,6 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
             removeListener(GameEvent.Collect::class, this@GameScreen)
             removeListener(GameEvent.PlayerDamaged::class, this@GameScreen)
             removeListener(GameEvent.PlayerDeath::class, this@GameScreen)
-
         }
     }
 
@@ -153,11 +197,31 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
             game.audioService.update()
         }
 
+        if (!gameStarted &&  !gameStartCounting && Gdx.input.justTouched()) {
+            touchToBeginLabel.clearActions()
+            touchToBeginLabel.color.a = 1f
+            touchToBeginLabel.setText("Start In")
+            countDownLabel.color.a = 1f
+            game.audioService.play(MusicAsset.BGM, 0.5f)
+            gameStartCounting = true
+        }
+
+        if (gameStartCounting) {
+            startCountDown = max(0f, startCountDown - delta)
+            if (startCountDown <= 0f) {
+                game.stage.clear()
+                startGame()
+            }
+            countDownLabel.setText("${startCountDown.toInt() + 1}")
+        }
+
         game.stage.run {
-            viewport.apply()
+            game.uiViewport.apply()
             act()
             draw()
         }
+
+        if (!game.fadeInCompleted()) game.performFadeIn()
     }
 
     override fun onEvent(event: GameEvent) {

@@ -49,7 +49,6 @@ class PlayerInputSystem(
             jumpCd = JUMP_COLD_DOWN
         }
         val canJump = jumpCd <= 0f && onGround && state.currentState != State.JUMP && state.currentState != State.IN_AIR
-        LOG.info { "$canJump cd $jumpCd pos ${transform.position.y} state ${state.currentState}" }
 
         touchInterval = max(0f, touchInterval - deltaTime)
         tmpVec.y = Gdx.input.y.toFloat()
