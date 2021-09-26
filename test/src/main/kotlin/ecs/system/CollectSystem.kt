@@ -34,20 +34,19 @@ class CollectSystem(private val gameEventManager: GameEventManager)
         requireNotNull(move) { "Entity |entity| must have a MoveComponent. entity = $entity" }
         val collectable = entity[CollectableComponent.mapper]
         requireNotNull(collectable) { "Entity |entity| must have a CollectableComponent. entity = $entity" }
+        val collider = entity[ColliderComponent.mapper]
+        requireNotNull(collider) { "Entity |entity| must have a ColliderComponent. entity = $entity" }
 
         if (transform.position.x <= -1f) {
             entity.addComponent<RemoveComponent>(engine)
         }
 
-        move.speed.x = -1 * CURRENT_SCROLL_SPEED * SCROLL_SPEED_TO_WORLD_RATIO + if (transform.position.y > floatingHeight) 1f else 0f
+        move.speed.x = -1 * CURRENT_SCROLL_SPEED * SCROLL_SPEED_TO_WORLD_RATIO
 
-        val collider = entity[ColliderComponent.mapper]
-
-        // make collectable hold its position and enable collecting
-        if (collider == null && move.speed.y <= 0 && transform.position.y <= floatingHeight) {
+        // make collectable hold its position
+        if (move.speed.y <= 0 && transform.position.y <= floatingHeight) {
             move.speed.y = 0f
             move.acceletration.y = 0f
-            entity.addComponent<ColliderComponent>(engine)
         }
 
         if (collider == null) return

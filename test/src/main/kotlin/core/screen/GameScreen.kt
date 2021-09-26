@@ -112,7 +112,7 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
                 setInitialPosition(V_WIDTH.div(2).toFloat() - size.x / 2f, GROUND_HEIGHT, 1f)
             }
             with<ColliderComponent> {
-                modifier = ColliderModifier(0.4f, 0.3f, 0.5f, 1f)
+                modifier = ColliderModifier(0.4f, 0.3f, 0.5f, 0.7f)
             }
             with<MoveComponent>()
             with<GraphicComponent>()
