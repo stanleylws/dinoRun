@@ -67,10 +67,9 @@ class PlayerInputSystem(
             touchCount == 1 && Gdx.input.isTouched(0) ->  State.WALK
             touchCount >= 2 && Gdx.input.isTouched(0) -> State.RUN
             // keyboard input
-            Gdx.input.isKeyPressed(Input.Keys.A) -> State.ATTACK
-            Gdx.input.isKeyPressed(Input.Keys.S) -> State.WALK
+            Gdx.input.isKeyPressed(Input.Keys.A) -> State.IDLE
             Gdx.input.isKeyPressed(Input.Keys.D) -> State.RUN
-            else -> State.IDLE
+            else -> State.WALK
         }
 
         CURRENT_SCROLL_SPEED = when(state.currentState) {
