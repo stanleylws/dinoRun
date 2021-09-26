@@ -14,6 +14,7 @@ import ktx.log.logger
 import obstacle.Box
 import obstacle.Empty
 import obstacle.Spike
+import obstacle.Trap
 
 private val LOG = logger<ObstacleSystem>()
 
@@ -119,6 +120,7 @@ class ObstacleSystem(
         return when {
             type.equals(ObstacleType.SPIKE) -> Spike()
             type.equals(ObstacleType.BOX) -> Box()
+            type.equals(ObstacleType.TRAP) -> Trap()
             else -> Empty()
         }
     }

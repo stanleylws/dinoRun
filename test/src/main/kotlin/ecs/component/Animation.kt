@@ -26,6 +26,8 @@ enum class AnimationType(
     DINO_RUNNING_JUMP("dino_jump_running", soundAsset = SoundAsset.PLAYER_JUMP, volume = 0.1f),
     DINO_HURT("dino_hurt", 0.5f, Animation.PlayMode.NORMAL, SoundAsset.PLAYER_DAMAGED, 0.1f),
     SPIKE("spike_idle"),
+    TRAP("trap_idle"),
+    TRAP_ACTIVATE("trap_activated", 0.5f, Animation.PlayMode.NORMAL),
     BOX_IDLE("box_idle", 0.5f),
     BOX_BREAK("box_break", 0.5f, Animation.PlayMode.NORMAL, SoundAsset.BOX_BREAK, 0.1f),
     HEART("heart", 0.5f),

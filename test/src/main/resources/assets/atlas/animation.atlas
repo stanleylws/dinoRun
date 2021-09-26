@@ -1,356 +1,419 @@
 
 animation.png
-size: 1024, 32
+size: 1024, 64
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
 box_break
   rotate: false
-  xy: 2, 2
-  size: 28, 24
-  orig: 28, 24
-  offset: 0, 0
-  index: -1
-box_hit
-  rotate: false
-  xy: 32, 2
-  size: 28, 24
-  orig: 28, 24
-  offset: 0, 0
-  index: 3
-box_hit
-  rotate: false
-  xy: 62, 2
-  size: 28, 24
-  orig: 28, 24
-  offset: 0, 0
-  index: 0
-box_hit
-  rotate: false
-  xy: 92, 2
-  size: 28, 24
-  orig: 28, 24
+  xy: 2, 28
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: 2
-box_hit
+box_break
   rotate: false
-  xy: 152, 2
-  size: 28, 24
-  orig: 28, 24
+  xy: 240, 28
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 1
+box_break
+  rotate: false
+  xy: 308, 28
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 3
+box_idle
+  rotate: false
+  xy: 70, 28
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: 1
 box_idle
   rotate: false
-  xy: 122, 2
-  size: 28, 24
-  orig: 28, 24
+  xy: 138, 28
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
-  index: -1
+  index: 6
+box_break
+  rotate: false
+  xy: 138, 28
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 0
+box_idle
+  rotate: false
+  xy: 138, 28
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 4
+box_idle
+  rotate: false
+  xy: 138, 28
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 0
+box_idle
+  rotate: false
+  xy: 172, 28
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 3
+box_idle
+  rotate: false
+  xy: 274, 28
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 5
+box_idle
+  rotate: false
+  xy: 342, 28
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 2
 diamond
   rotate: false
-  xy: 774, 12
+  xy: 288, 12
   size: 18, 14
   orig: 18, 14
   offset: 0, 0
   index: 5
 diamond
   rotate: false
-  xy: 814, 12
+  xy: 308, 12
   size: 18, 14
   orig: 18, 14
   offset: 0, 0
   index: 2
 diamond
   rotate: false
-  xy: 814, 12
-  size: 18, 14
-  orig: 18, 14
-  offset: 0, 0
-  index: 4
-diamond
-  rotate: false
-  xy: 814, 12
-  size: 18, 14
-  orig: 18, 14
-  offset: 0, 0
-  index: 0
-diamond
-  rotate: false
-  xy: 814, 12
+  xy: 308, 12
   size: 18, 14
   orig: 18, 14
   offset: 0, 0
   index: 1
 diamond
   rotate: false
-  xy: 814, 12
+  xy: 308, 12
+  size: 18, 14
+  orig: 18, 14
+  offset: 0, 0
+  index: 0
+diamond
+  rotate: false
+  xy: 308, 12
   size: 18, 14
   orig: 18, 14
   offset: 0, 0
   index: 3
 diamond
   rotate: false
-  xy: 834, 12
+  xy: 308, 12
+  size: 18, 14
+  orig: 18, 14
+  offset: 0, 0
+  index: 4
+diamond
+  rotate: false
+  xy: 328, 12
   size: 18, 14
   orig: 18, 14
   offset: 0, 0
   index: 7
 diamond
   rotate: false
-  xy: 874, 12
+  xy: 348, 12
   size: 18, 14
   orig: 18, 14
   offset: 0, 0
   index: 9
 diamond
   rotate: false
-  xy: 894, 12
+  xy: 756, 46
   size: 18, 14
   orig: 18, 14
   offset: 0, 0
   index: 6
 diamond
   rotate: false
-  xy: 934, 12
+  xy: 776, 46
   size: 18, 14
   orig: 18, 14
   offset: 0, 0
   index: 8
 dino_hurt
   rotate: false
-  xy: 312, 2
+  xy: 462, 36
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 2
 dino_hurt
   rotate: false
-  xy: 520, 2
+  xy: 566, 36
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 1
 dino_hurt
   rotate: false
-  xy: 728, 2
+  xy: 670, 36
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 0
 dino_idle
   rotate: false
-  xy: 364, 2
+  xy: 488, 36
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 1
 dino_idle
   rotate: false
-  xy: 442, 2
+  xy: 132, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 3
 dino_idle
   rotate: false
-  xy: 650, 2
+  xy: 236, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 2
 dino_jump_normal
   rotate: false
-  xy: 338, 2
+  xy: 80, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 dino_walk
   rotate: false
-  xy: 338, 2
+  xy: 80, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 2
 dino_jump_running
   rotate: false
-  xy: 234, 2
+  xy: 28, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 dino_kick
   rotate: false
-  xy: 286, 2
+  xy: 54, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 3
 dino_idle
   rotate: false
-  xy: 286, 2
+  xy: 54, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 0
 dino_kick
   rotate: false
-  xy: 286, 2
+  xy: 54, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 0
 dino_kick
   rotate: false
-  xy: 494, 2
+  xy: 158, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 2
 dino_kick
   rotate: false
-  xy: 702, 2
+  xy: 262, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 1
 dino_run
   rotate: false
-  xy: 260, 2
+  xy: 436, 36
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 4
 dino_run
   rotate: false
-  xy: 390, 2
+  xy: 106, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 1
 dino_run
   rotate: false
-  xy: 468, 2
+  xy: 540, 36
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 3
 dino_run
   rotate: false
-  xy: 572, 2
+  xy: 592, 36
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 0
 dino_run
   rotate: false
-  xy: 598, 2
+  xy: 210, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 5
 dino_run
   rotate: false
-  xy: 676, 2
+  xy: 644, 36
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 2
 dino_walk
   rotate: false
-  xy: 182, 2
+  xy: 2, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 0
 dino_walk
   rotate: false
-  xy: 208, 2
+  xy: 410, 36
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 5
 dino_walk
   rotate: false
-  xy: 416, 2
+  xy: 514, 36
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 4
 dino_walk
   rotate: false
-  xy: 546, 2
+  xy: 184, 2
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 1
 dino_walk
   rotate: false
-  xy: 624, 2
+  xy: 618, 36
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 3
 heart
   rotate: false
-  xy: 754, 12
-  size: 18, 14
-  orig: 18, 14
-  offset: 0, 0
-  index: 2
-heart
-  rotate: false
-  xy: 754, 12
-  size: 18, 14
-  orig: 18, 14
-  offset: 0, 0
-  index: 0
-heart
-  rotate: false
-  xy: 754, 12
-  size: 18, 14
-  orig: 18, 14
-  offset: 0, 0
-  index: 6
-heart
-  rotate: false
-  xy: 754, 12
-  size: 18, 14
-  orig: 18, 14
-  offset: 0, 0
-  index: 1
-heart
-  rotate: false
-  xy: 754, 12
-  size: 18, 14
-  orig: 18, 14
-  offset: 0, 0
-  index: 3
-heart
-  rotate: false
-  xy: 794, 12
+  xy: 696, 46
   size: 18, 14
   orig: 18, 14
   offset: 0, 0
   index: 7
 heart
   rotate: false
-  xy: 854, 12
+  xy: 716, 46
   size: 18, 14
   orig: 18, 14
   offset: 0, 0
   index: 4
 heart
   rotate: false
-  xy: 914, 12
+  xy: 736, 46
+  size: 18, 14
+  orig: 18, 14
+  offset: 0, 0
+  index: 1
+heart
+  rotate: false
+  xy: 736, 46
+  size: 18, 14
+  orig: 18, 14
+  offset: 0, 0
+  index: 3
+heart
+  rotate: false
+  xy: 736, 46
+  size: 18, 14
+  orig: 18, 14
+  offset: 0, 0
+  index: 0
+heart
+  rotate: false
+  xy: 736, 46
+  size: 18, 14
+  orig: 18, 14
+  offset: 0, 0
+  index: 2
+heart
+  rotate: false
+  xy: 736, 46
+  size: 18, 14
+  orig: 18, 14
+  offset: 0, 0
+  index: 6
+heart
+  rotate: false
+  xy: 368, 12
   size: 18, 14
   orig: 18, 14
   offset: 0, 0
   index: 5
 spike_idle
   rotate: false
-  xy: 954, 10
+  xy: 388, 10
   size: 16, 16
   orig: 16, 16
+  offset: 0, 0
+  index: -1
+trap_activated
+  rotate: false
+  xy: 104, 28
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 1
+trap_activated
+  rotate: false
+  xy: 206, 28
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 3
+trap_activated
+  rotate: false
+  xy: 376, 28
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 2
+trap_idle
+  rotate: false
+  xy: 36, 28
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1

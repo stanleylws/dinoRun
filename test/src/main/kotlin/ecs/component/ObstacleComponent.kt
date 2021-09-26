@@ -29,6 +29,7 @@ enum class ObstacleType(
     NONE(Vector2()),
     SPIKE(Vector2(V_WIDTH.toFloat(), GROUND_HEIGHT + 0.2f)),
     BOX(Vector2(V_WIDTH.toFloat(), GROUND_HEIGHT + 2f)),
+    TRAP(Vector2(V_WIDTH.toFloat(), GROUND_HEIGHT - 0.3f))
 }
 
 class ObstacleComponent: Component, Pool.Poolable {
