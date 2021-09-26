@@ -89,11 +89,7 @@ class MoveSystem:
 
         move.acceletration.y = GRAVITATIONAL_ACCELERATION
 
-        player.distance += when(state.currentState) {
-            State.WALK -> worldScrollSpeed * deltaTime
-            State.RUN -> worldScrollSpeed * 2 * deltaTime
-            else -> 0f
-        }
+        player.distance += (move.speed.x + worldScrollSpeed) * deltaTime
         moveEntity(transform, move, deltaTime)
 
         transform.position.x = MathUtils.clamp(

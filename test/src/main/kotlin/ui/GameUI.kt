@@ -1,6 +1,7 @@
 package ui
 
 import com.badlogic.gdx.scenes.scene2d.Group
+import com.badlogic.gdx.utils.Align
 import core.V_HEIGHT_PIXELS
 import core.V_WIDTH_PIXELS
 import ktx.actors.plusAssign
@@ -10,6 +11,7 @@ class GameUI: Group() {
     val lifeBarImage = scene2d.image(SkinImage.LIFE_BAR_EMPTY.atlasKey)
     val diamondCountImage = scene2d.image(SkinImage.DIAMOND_COUNT.atlasKey)
     val diamondCountLabel = scene2d.label("")
+    val distanceCountLabel = scene2d.label("")
     val pauseResumeButton = scene2d.imageButton(SkinImageButton.PAUSE_PLAY.name)
     val soundOnOffButton = scene2d.imageButton(SkinImageButton.SOUND_ON_OFF.name)
     val resetButton = scene2d.imageButton(SkinImageButton.RESET.name)
@@ -29,6 +31,12 @@ class GameUI: Group() {
             setText(0)
             setFontScale(0.4f)
             setPosition(50f, V_HEIGHT_PIXELS - 45f)
+        }
+
+        this += distanceCountLabel.apply {
+            setText("0m")
+            setFontScale(0.7f)
+            setPosition(V_WIDTH_PIXELS / 2f - width - 20f, V_HEIGHT_PIXELS - 40f)
         }
 
         this += resetButton.apply {

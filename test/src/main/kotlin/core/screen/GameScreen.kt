@@ -17,6 +17,7 @@ import ktx.ashley.*
 import ktx.collections.toGdxArray
 import ktx.log.logger
 import ktx.preferences.flush
+import ktx.preferences.get
 import ktx.preferences.set
 import ktx.scene2d.actors
 import ktx.scene2d.label
@@ -36,6 +37,7 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
     private var gameStartCounting = false
     private var gameStarted = false
     private var startCountDown = 3f
+    private lateinit var player: Entity
 
     private val ui = GameUI().apply {
         resetButton.onClick {
@@ -102,11 +104,12 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
         CURRENT_SCROLL_SPEED = DEFAULT_SCROLL_SPEED * 2
         game.engine.getSystem<PlayerInputSystem>().setProcessing(false)
         game.engine.getSystem<ObstacleSystem>().setProcessing(false)
+        game.engine.getSystem<MoveSystem>().setProcessing(false)
     }
 
     private fun spawnPlayer(): Entity {
         // create player entity
-        return game.engine.entity {
+        player = game.engine.entity {
             with<TransformComponent>() {
                 size.set(2f, 2f)
                 setInitialPosition(V_WIDTH.div(2).toFloat() - size.x / 2f, GROUND_HEIGHT, 1f)
@@ -122,13 +125,14 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
             }
             with<AnimationComponent>()
         }
+        return player
     }
 
     override fun show() {
         game.stage.actors {
             table {
                 defaults().fillX().expandX()
-                touchToBeginLabel = label("Touch To Begin") { cell ->
+                touchToBeginLabel = label("Touch To Begin\n\nBest-${game.preferences["highscore", 0]}m") { cell ->
                     wrap = true
                     setAlignment(Align.center)
                     setFontScale(0.7f)
@@ -142,7 +146,7 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
                     setFontScale(0.7f)
                     cell.pad(5f)
                 }
-
+                row()
                 setFillParent(true)
                 pack()
             }
@@ -170,6 +174,7 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
         game.stage += ui
         game.engine.getSystem<PlayerInputSystem>().setProcessing(true)
         game.engine.getSystem<ObstacleSystem>().setProcessing(true)
+        game.engine.getSystem<MoveSystem>().setProcessing(true)
         gameStartCounting = false
         gameStarted = true
     }
@@ -215,6 +220,10 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
             countDownLabel.setText("${startCountDown.toInt() + 1}")
         }
 
+        player[PlayerComponent.mapper]?.let {
+            ui.distanceCountLabel.setText("${it.distance.toInt()}m")
+        }
+
         game.stage.run {
             game.uiViewport.apply()
             act()
@@ -235,8 +244,11 @@ class GameScreen(private val game: MyGame): KtxScreen, GameEventListener {
             is GameEvent.PlayerDeath -> {
                 ui.updateLife(0)
                 ui.resetButton.isVisible = true
+                print(event.distance)
                 game.preferences.flush {
-                    this["highscore"] = event.distance
+                    if (event.distance > getInteger(this["highscore"])) {
+                        this["highscore"] = event.distance
+                    }
                 }
             }
         }
