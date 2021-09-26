@@ -7,9 +7,11 @@ import ktx.ashley.mapperFor
 
 class InteractComponent: Component, Pool.Poolable {
     var zone = Rectangle()
+    var modifier = ColliderModifier()
 
     override fun reset() {
         zone = Rectangle()
+        modifier = ColliderModifier()
     }
 
     companion object {

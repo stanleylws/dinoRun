@@ -49,6 +49,10 @@ class Box: Obstacle {
         return colliderModifier
     }
 
+    override fun getInteractZoneModifier(): ColliderModifier {
+        return colliderModifier
+    }
+
     override fun onInteraction(self: Entity, other: Entity, engine: Engine) {
         if (other[PlayerComponent.mapper] == null) return
 

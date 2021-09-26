@@ -18,6 +18,7 @@ interface Obstacle {
     fun getDamage(): Int
     fun getAnimationType(): AnimationType
     fun getColliderModifier(): ColliderModifier
+    fun getInteractZoneModifier(): ColliderModifier
     fun onInteraction(self: Entity, other: Entity, engine: Engine)
     fun performAction(self: Entity, other: Entity,  engine: Engine)
 }

@@ -62,7 +62,9 @@ class ObstacleSystem(
             with<ColliderComponent> {
                 modifier = obstacle.getColliderModifier()
             }
-            with<InteractComponent>()
+            with<InteractComponent>() {
+                modifier = obstacle.getInteractZoneModifier()
+            }
             with<MoveComponent> {
                 speed.x = -1 * CURRENT_SCROLL_SPEED * SCROLL_SPEED_TO_WORLD_RATIO
             }
@@ -92,10 +94,10 @@ class ObstacleSystem(
         move.speed.x = -1 * CURRENT_SCROLL_SPEED * SCROLL_SPEED_TO_WORLD_RATIO
 
         interact.zone.set(
-            transform.interpolatedPosition.x,
-            transform.interpolatedPosition.y,
-            transform.size.x,
-            transform.size.y
+            transform.interpolatedPosition.x + interact.modifier.offsetX,
+            transform.interpolatedPosition.y + interact.modifier.offsetY,
+            transform.size.x * interact.modifier.widthScale,
+            transform.size.y * interact.modifier.heightScale
         )
 
         playerEntities.forEach { playerEntity ->

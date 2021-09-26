@@ -26,6 +26,10 @@ class Empty: Obstacle {
         return ColliderModifier()
     }
 
+    override fun getInteractZoneModifier(): ColliderModifier {
+        return ColliderModifier()
+    }
+
     override fun onInteraction(self: Entity, other: Entity, engine: Engine) = Unit
 
     override fun performAction(self: Entity, other: Entity, engine: Engine) = Unit
