@@ -3,3 +3,4 @@ gradlew*
 */.gradle
 */.idea
 */build
+*/ios

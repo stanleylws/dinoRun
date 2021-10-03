@@ -1,0 +1,24 @@
+sourceCompatibility = 1.7
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+sourceSets.main.java.srcDirs = [ "src/" ]
+
+eclipse.project.name = appName + "-core"
+
+dependencies {
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
+    implementation("com.badlogicgames.gdx:gdx:$gdxVersion")
+    implementation("com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion")
+    implementation("com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop")
+    implementation("com.badlogicgames.ashley:ashley:1.7.3")
+    implementation("io.github.libktx:ktx-app:$ktxVersion")
+    implementation("io.github.libktx:ktx-assets-async:$ktxVersion")
+    implementation("io.github.libktx:ktx-log:$ktxVersion")
+    implementation("io.github.libktx:ktx-graphics:$ktxVersion")
+    implementation("io.github.libktx:ktx-ashley:$ktxVersion")
+    implementation("io.github.libktx:ktx-collections:$ktxVersion")
+    implementation("io.github.libktx:ktx-preferences:$ktxVersion")
+    implementation("io.github.libktx:ktx-style:$ktxVersion")
+    implementation("io.github.libktx:ktx-scene2d:$ktxVersion")
+    implementation("io.github.libktx:ktx-actors:$ktxVersion")
+}
