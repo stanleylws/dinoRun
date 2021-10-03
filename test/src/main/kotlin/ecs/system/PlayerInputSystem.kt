@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.viewport.Viewport
 import core.CURRENT_SCROLL_SPEED
@@ -34,6 +35,7 @@ class PlayerInputSystem(
     private var touchInterval = 0f
     private var touchCount = 0
     private val tmpVec = Vector2()
+    private var lastState: State = State.IDLE
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         val state = entity[StateComponent.mapper]
@@ -45,10 +47,9 @@ class PlayerInputSystem(
 
         val onGround = abs(transform.position.y - GROUND_HEIGHT) <= FLOAT_EPSILON
         if (onGround && state.currentState == State.IN_AIR) {
-            state.currentState = State.IDLE
             jumpCd = JUMP_COLD_DOWN
         }
-        val canJump = jumpCd <= 0f && onGround && state.currentState != State.JUMP && state.currentState != State.IN_AIR
+        val canJump = jumpCd <= 0f && onGround && state.currentState != State.JUMP && state.currentState != State.LEAP && state.currentState != State.IN_AIR
 
         touchInterval = max(0f, touchInterval - deltaTime)
         tmpVec.y = Gdx.input.y.toFloat()
@@ -60,21 +61,28 @@ class PlayerInputSystem(
 
         state.currentState = when {
             // not processing when in hurt state
-            state.currentState == State.HURT || state.currentState == State.JUMP || state.currentState == State.IN_AIR -> state.currentState
-
-            Gdx.input.isKeyPressed(Input.Keys.SPACE) && canJump -> State.JUMP
+            state.currentState == State.HURT -> state.currentState
+            !onGround && lastState == State.IN_AIR -> state.currentState
+            !onGround && (lastState == State.JUMP || lastState == State.LEAP) -> State.IN_AIR
             // touch input
+            Gdx.input.isTouched && Gdx.input.deltaY < -20  && canJump && lastState != State.RUN -> State.JUMP
+            Gdx.input.isTouched && Gdx.input.deltaY < -20  && canJump && lastState == State.RUN -> State.LEAP
             touchCount == 1 && Gdx.input.isTouched(0) ->  State.WALK
             touchCount >= 2 && Gdx.input.isTouched(0) -> State.RUN
+
             // keyboard input
-            Gdx.input.isKeyPressed(Input.Keys.A) -> State.IDLE
+            Gdx.input.isKeyPressed(Input.Keys.SPACE) && canJump && lastState != State.RUN -> State.JUMP
+            Gdx.input.isKeyPressed(Input.Keys.SPACE) && canJump && lastState == State.RUN -> State.LEAP
+            Gdx.input.isKeyPressed(Input.Keys.A) -> State.WALK
             Gdx.input.isKeyPressed(Input.Keys.D) -> State.RUN
-            else -> State.WALK
+            else -> State.IDLE
         }
+        lastState = state.currentState
 
         CURRENT_SCROLL_SPEED = when(state.currentState) {
-            State.JUMP -> CURRENT_SCROLL_SPEED
             State.IN_AIR -> CURRENT_SCROLL_SPEED
+            State.JUMP -> DEFAULT_SCROLL_SPEED
+            State.LEAP -> DEFAULT_SCROLL_SPEED * 4
             State.WALK -> DEFAULT_SCROLL_SPEED * 2
             State.RUN -> DEFAULT_SCROLL_SPEED * 4
             else -> DEFAULT_SCROLL_SPEED

@@ -36,7 +36,7 @@ const val WORLD_TO_PIXEL_RATIO = 24
 
 const val GROUND_HEIGHT = 1f
 const val GRAVITATIONAL_ACCELERATION = -10f
-const val IN_DEBUGGING = true
+const val IN_DEBUGGING = false
 
 const val SCROLL_SPEED_TO_WORLD_RATIO =  1f / 0.0625f
 const val DEFAULT_SCROLL_SPEED = 0.05f
@@ -79,7 +79,6 @@ class MyGame: KtxGame<KtxScreen>() {
             addScreen(LoadingScreen(this@MyGame))
             setScreen<LoadingScreen>()
         }
-
         batch = SpriteBatch()
         shape = ShapeRenderer()
         fadeRenderer = ShapeRenderer(8)

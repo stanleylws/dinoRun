@@ -75,13 +75,15 @@ class MoveSystem:
         move.speed.x = when(state.currentState) {
             State.WALK -> 0f
             State.RUN -> worldScrollSpeed
-            State.JUMP -> move.speed.x
+            State.JUMP -> -1 * worldScrollSpeed
+            State.LEAP -> worldScrollSpeed
             State.IN_AIR -> move.speed.x
             else -> -1 * worldScrollSpeed
         }
 
         move.speed.y = when(state.currentState) {
             State.JUMP -> JUMP_SPEED
+            State.LEAP -> JUMP_SPEED
             State.IN_AIR -> move.speed.y
             State.FAINT -> move.speed.y
             else -> 0f
@@ -103,8 +105,6 @@ class MoveSystem:
             if (state.currentState == State.FAINT) -1f else GROUND_HEIGHT,
             V_HEIGHT + 1f - transform.size.y
         )
-
-        if (state.currentState == State.JUMP && transform.position.y > GROUND_HEIGHT) state.currentState = State.IN_AIR
     }
 
     private fun moveEntity(transform: TransformComponent, move: MoveComponent, deltaTime: Float) {
